@@ -17,10 +17,10 @@
                 Console.WriteLine("1. Place Order\n2. Add Customer\n3. Lookup Order\n4. Exit");
                 string? slection = Console.ReadLine()?.Trim().ToLower();
                 Console.WriteLine();
-                isRunning = MainMenu(slection, isRunning);
+                isRunning = MainMenu(slection, isRunning, connectionString);
             }
         }
-        internal static bool MainMenu(string? slection, bool isRunning)
+        internal static bool MainMenu(string? slection, bool isRunning, string connectionString)
         {
             switch (slection)
             {
