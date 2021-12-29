@@ -1,4 +1,6 @@
-﻿namespace PlainOldStoreApp
+﻿using PlainOldStoreApp.App;
+
+namespace PlainOldStoreApp.Ui
 {
     class Program
     {
@@ -26,15 +28,15 @@
             {
                 case "1":
                 case "place order":
-                    //PlaneOldShop.PlaceOrder(connectionString);
+                    PlaneOldShop.PlaceOrder(connectionString);
                     break;
                 case "2":
                 case "add customer":
-                    //PlaneOldShop.AddCustomer(connectionString);
+                    PlaneOldShop.AddCustomer(connectionString);
                     break;
                 case "3":
                 case "lookup order":
-                    //PlaneOldShop.LookupOrder(connectionString);
+                    PlaneOldShop.LookupOrder(connectionString);
                     break;
                 case "4":
                 case "exit":
