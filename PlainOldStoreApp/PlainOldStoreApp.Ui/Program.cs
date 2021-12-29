@@ -1,4 +1,4 @@
-﻿using PlainOldStoreApp.App;
+﻿using PlainOldStoreApp.Ui;
 
 namespace PlainOldStoreApp.Ui
 {

@@ -2,12 +2,15 @@ using Xunit;
 
 namespace PlainOldStoreApp.Tests
 {
-    public class UnitTest1
+    public class PosaTests
     {
         [Fact]
-        public void Test1()
+        public void StoreTests()
         {
-
+            //arrange
+            Validate.ValidateNameOrEmail();
+            //act
+            //assert
         }
     }
 }
