@@ -32,11 +32,11 @@ namespace PlainOldStoreApp.Ui
                     break;
                 case "2":
                 case "add customer":
-                    PlaneOldShop.AddCustomer(connectionString);
+                    //PlaneOldShop.AddCustomer(connectionString);
                     break;
                 case "3":
                 case "lookup order":
-                    PlaneOldShop.LookupOrder(connectionString);
+                    //PlaneOldShop.LookupOrder(connectionString);
                     break;
                 case "4":
                 case "exit":
