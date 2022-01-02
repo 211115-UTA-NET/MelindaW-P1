@@ -38,7 +38,6 @@ namespace PlainOldStoreApp.Ui
         }
         internal static Tuple<string, string> ValidateEmail(string? email)
         {
-            string? tryAgain;
             if (string.IsNullOrWhiteSpace(email))
             {
                 return new Tuple<string, string>("false", "");
@@ -50,42 +49,13 @@ namespace PlainOldStoreApp.Ui
             {
                 return new Tuple<string, string>("email", email.ToUpper());
             }
-            Console.WriteLine("Your did not enter in an email.");
-            Console.WriteLine("Would you like to try again?");
-            Console.WriteLine("Yes(Y) or No(N)?");
-            tryAgain = Console.ReadLine()?.Trim().ToLower();
-            Console.WriteLine();
-            if (tryAgain == "yes" || tryAgain == "y")
-            {
-                Console.WriteLine("Please enter your email.");
-                email = Console.ReadLine()?.Trim();
-                Console.WriteLine();
-                return ValidateEmail(email);
-            }
             return new Tuple<string, string>("false", email);
         }
-
         internal static Tuple<string, string> VaildateName(string? name)
         {
-            string? tryAgain;
             if (string.IsNullOrWhiteSpace(name))
             {
-                Console.WriteLine("You did not enter you fist and last name.");
-                Console.WriteLine("Would you like to try again?");
-                Console.WriteLine("Yes(Y) or No(N)?");
-                tryAgain = Console.ReadLine()?.Trim();
-                Console.WriteLine();
-                if (tryAgain == "yes" || tryAgain == "y")
-                {
-                    Console.WriteLine("Please enter your first name and last name.");
-                    name = Console.ReadLine()?.Trim();
-                    Console.WriteLine();
-                    return VaildateName(name);
-                }
-                else
-                {
-                    return new Tuple<string, string>("", "");
-                }
+                return new Tuple<string, string>("", "");
             }
             string pattern = @"^[a-z]+[\w\s]+[a-z]+$";
             Regex regex = new Regex(pattern, RegexOptions.IgnoreCase);
@@ -96,22 +66,10 @@ namespace PlainOldStoreApp.Ui
                 string lastName = name.Split(' ')[1];
                 return new Tuple<string, string>(firstName.ToUpper(), lastName.ToUpper());
             }
-            Console.WriteLine("You did not enter you first and last name.");
-            Console.WriteLine("Would you like to try again?");
-            Console.WriteLine("Yes(Y) or No(N)?");
-            tryAgain = Console.ReadLine()?.Trim();
-            Console.WriteLine();
-            if (tryAgain == "yes" || tryAgain == "y")
-            {
-                Console.WriteLine("Please enter your first name and last name.");
-                name = Console.ReadLine()?.Trim();
-                Console.WriteLine();
-                return VaildateName(name);
-            }
             return new Tuple<string, string>("", "");
         }
 
-        internal static string ValidateAddress(string? address1, string? city, string? state, string? zip)
+        internal static async Task<string> ValidateAddress(string? address1, string? city, string? state, string? zip)
         {
             string userId = File.ReadAllText("C:/Users/melin/OneDrive/Desktop/RevGit/MelindaW-P0/usps-web-tools-api.txt");
             bool isValidating = true;
@@ -137,7 +95,7 @@ namespace PlainOldStoreApp.Ui
                 settings.Async = true;
                 using (XmlReader reader = XmlReader.Create(url, settings))
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         if (reader.NodeType == XmlNodeType.Text)
                             address += reader.ReadContentAsString() + "\n";
