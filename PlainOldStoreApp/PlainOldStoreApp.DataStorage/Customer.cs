@@ -32,7 +32,7 @@ namespace PlainOldStoreApp.DataStorage
             _customerRepository = customerRepository;
         }
 
-        internal Customer(
+        public Customer(
             string firstName,
             string lastName,
             string address1,
@@ -84,7 +84,7 @@ namespace PlainOldStoreApp.DataStorage
             return foundName;
         }
 
-        internal bool AddCustomer()
+        public bool AddCustomer()
         {
             bool isAdded = _customerRepository.AddNewCustomer(FirstName, LastName, Address1, City, State, ZipCode, Email).Result;
             return isAdded;
