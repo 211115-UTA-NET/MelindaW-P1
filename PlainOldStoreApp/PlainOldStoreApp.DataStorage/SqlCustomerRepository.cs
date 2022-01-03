@@ -46,7 +46,7 @@ namespace PlainOldStoreApp.DataStorage
             {
                 await connection.CloseAsync();
             }
-            if (emailSQL == email)
+            if (string.Equals(emailSQL, email, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
@@ -98,7 +98,6 @@ namespace PlainOldStoreApp.DataStorage
             {
                 await connection.CloseAsync();
             }
-
             return customers;
         }
 

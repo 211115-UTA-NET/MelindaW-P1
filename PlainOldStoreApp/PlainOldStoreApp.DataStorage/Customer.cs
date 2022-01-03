@@ -9,12 +9,12 @@ namespace PlainOldStoreApp.DataStorage
     public class Customer
     {
         internal Guid CustomerId { get; }
-        internal string? FirstName { get; }
-        internal string? LastName { get; }
-        internal string? Address1 { get; }
-        internal string? City { get; }
-        internal string? State { get; }
-        internal string? ZipCode { get; }
+        public string? FirstName { get; }
+        public string? LastName { get; }
+        public string? Address1 { get; }
+        public string? City { get; }
+        public string? State { get; }
+        public string? ZipCode { get; }
         public string? Email { get; }
 
         private readonly ICustomerRepository _customerRepository;
