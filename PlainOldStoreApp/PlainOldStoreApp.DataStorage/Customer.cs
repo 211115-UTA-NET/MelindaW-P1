@@ -8,7 +8,7 @@ namespace PlainOldStoreApp.DataStorage
 {
     public class Customer
     {
-        internal Guid CustomerId { get; }
+        public Guid CustomerId { get; }
         public string? FirstName { get; }
         public string? LastName { get; }
         public string? Address1 { get; }

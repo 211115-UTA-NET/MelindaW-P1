@@ -19,24 +19,24 @@ namespace PlainOldStoreApp.Ui
                 Console.WriteLine("1. Place Order\n2. Add Customer\n3. Lookup Order\n4. Exit");
                 string? slection = Console.ReadLine()?.Trim().ToLower();
                 Console.WriteLine();
-                isRunning = MainMenu(slection, isRunning, connectionString);
+                isRunning = MainMenu(slection, isRunning, connectionString).Result;
             }
         }
-        internal static bool MainMenu(string? slection, bool isRunning, string connectionString)
+        internal static async Task<bool> MainMenu(string? slection, bool isRunning, string connectionString)
         {
             switch (slection)
             {
                 case "1":
                 case "place order":
-                    PlaneOldShop.PlaceOrder(connectionString);
+                    await PlaneOldShop.PlaceOrder(connectionString);
                     break;
                 case "2":
                 case "add customer":
-                    PlaneOldShop.AddCustomer(connectionString);
+                    //PlaneOldShop.AddCustomer(connectionString);
                     break;
                 case "3":
                 case "lookup order":
-                    PlaneOldShop.LookupOrder(connectionString);
+                    //PlaneOldShop.LookupOrder(connectionString);
                     break;
                 case "4":
                 case "exit":
