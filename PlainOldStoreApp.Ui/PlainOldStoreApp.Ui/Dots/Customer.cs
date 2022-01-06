@@ -17,15 +17,16 @@ namespace PlainOldStoreApp.Ui.Dots
         public string? ZipCode { get; }
         public string? Email { get; }
 
-        public Customer(string firstname, string lastName, string Address1, string City, string state, string zipCode, string Email)
+        public Customer(Guid customerId, string firstname, string lastName, string address1, string city, string state, string zipCode, string email)
         {
+            CustomerId = customerId;
             FirstName = firstname;
             LastName = lastName;
-            Address1 = Address1;
-            City = City;
-            State = State;
-            ZipCode = ZipCode;
-            Email = Email;
+            Address1 = address1;
+            City = city;
+            State = state;
+            ZipCode = zipCode;
+            Email = email;
         }
     }
 }

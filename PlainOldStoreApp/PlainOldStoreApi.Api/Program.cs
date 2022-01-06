@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Formatters;
 using PlainOldStoreApp.DataStorage;
 
 string connectionString = await File.ReadAllTextAsync("C:/Users/melin/OneDrive/Desktop/RevGit/MelindaW-P0/waggonerm-posa-db.txt");
@@ -5,6 +6,11 @@ string connectionString = await File.ReadAllTextAsync("C:/Users/melin/OneDrive/D
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddControllers(options =>
+{
+    var jsonFormatter = options.OutputFormatters.OfType<SystemTextJsonOutputFormatter>().First();
+    jsonFormatter.SerializerOptions.WriteIndented = true;
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

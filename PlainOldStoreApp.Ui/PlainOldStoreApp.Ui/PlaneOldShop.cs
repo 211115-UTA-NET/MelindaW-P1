@@ -69,7 +69,7 @@ namespace PlainOldStoreApp.Ui
                     //Customer customerLookUpName = new Customer(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2, customerRepository);
                     //List<Customer> foundCoustomers = customerLookUpName.LookUpName();
 
-                    HttpResponseMessage responseCustomers = await httpClient.GetAsync($"https://localhost:7129/api/customer?firstName,lastName={nameOrEmailTuple.Item1},{nameOrEmailTuple.Item2}");
+                    HttpResponseMessage responseCustomers = await httpClient.GetAsync($"https://localhost:7129/api/customer/{nameOrEmailTuple.Item1}&{nameOrEmailTuple.Item2}");
                     string jsonFoundCustomers = await responseCustomers.Content.ReadAsStringAsync();
                     List<Customer> foundCustomers = JsonSerializer.Deserialize<List<Customer>>(jsonFoundCustomers);
                     string? emailLookUP;

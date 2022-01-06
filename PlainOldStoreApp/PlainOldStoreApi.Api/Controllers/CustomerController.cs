@@ -39,7 +39,7 @@ namespace PlainOldStoreApi.Api.Controllers
         }
 
         // GET: Get by firstName, lastName
-        [HttpGet("{firstName},{lastName}")]
+        [HttpGet("{firstName}&{lastName}")]
         public async Task<ActionResult<List<Customer>>> GetAll(string firstName, string lastName)
         {
             List<Customer> customers = await _customerRepository.GetAllCustomer(firstName, lastName);
