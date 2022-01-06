@@ -18,7 +18,7 @@ namespace PlainOldStoreApi.Api.Controllers
         }
 
         // GET: Get by email
-        [HttpGet]
+        [HttpGet("email")]
         public async Task<ActionResult<bool>> GetCustomerEmailTrueOrFalse([FromQuery, Required] string email)
         {
             bool foundEmail = await _customerRepository.GetCustomerEmail(email);
@@ -26,8 +26,8 @@ namespace PlainOldStoreApi.Api.Controllers
         }
 
         //GET: Get id by email
-        [HttpGet("{email}")]
-        public async Task<ActionResult<Guid>> GetCustomerIdByEmail(string email)
+        [HttpGet("id")]
+        public async Task<ActionResult<Guid>> GetCustomerIdByEmail([FromQuery, Required] string email)
         {
             Guid customerId = await _customerRepository.SqlGetCustomerId(email);
 
@@ -39,8 +39,8 @@ namespace PlainOldStoreApi.Api.Controllers
         }
 
         // GET: Get by firstName, lastName
-        [HttpGet("{firstName}&{lastName}")]
-        public async Task<ActionResult<List<Customer>>> GetAll(string firstName, string lastName)
+        [HttpGet("firstName&lastName")]
+        public async Task<ActionResult<List<Customer>>> GetAll([FromQuery, Required]string firstName, [FromQuery, Required] string lastName)
         {
             List<Customer> customers = await _customerRepository.GetAllCustomer(firstName, lastName);
             return customers;

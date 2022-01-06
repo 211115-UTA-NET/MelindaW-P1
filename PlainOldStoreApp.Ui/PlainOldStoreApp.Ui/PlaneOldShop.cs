@@ -5,9 +5,12 @@ namespace PlainOldStoreApp.Ui
 {
     internal class PlaneOldShop
     {
-        private static HttpClient httpClient = new HttpClient();
         internal async static Task PlaceOrder(string connectionString)
         {
+            Uri server = new Uri("https://localhost:7129");
+
+            IPlainOldStoreService plainOldStoreService = new PlainOldStoreService(server);
+
             bool isOrdering = true;
             while (isOrdering)
             {
@@ -46,10 +49,21 @@ namespace PlainOldStoreApp.Ui
                 }
                 if (nameOrEmailTuple.Item1 == "email")
                 {
-                    HttpResponseMessage responseEmail= await httpClient.GetAsync($"https://localhost:7129/api/customer?email={nameOrEmailTuple.Item2}");
+                    //HttpResponseMessage responseEmail= await httpClient.GetAsync($"https://localhost:7129/api/customer?email={nameOrEmailTuple.Item2}");
 
-                    string jsonFoundEmail = await responseEmail.Content.ReadAsStringAsync();
-                    bool foundEmail = JsonSerializer.Deserialize<bool>(jsonFoundEmail);
+                    //string jsonFoundEmail = await responseEmail.Content.ReadAsStringAsync();
+                    //bool foundEmail = JsonSerializer.Deserialize<bool>(jsonFoundEmail);
+                    bool foundEmail;
+                    try
+                    {
+                        foundEmail = await plainOldStoreService.GetIfEmailFound(nameOrEmailTuple.Item2);
+                    }
+                    catch (ServerException)
+                    {
+                        Console.WriteLine("Unable to connect to server.");
+                        break;
+                    }
+
                     if (foundEmail)
                     {
                         email = nameOrEmailTuple.Item2.ToUpper();
@@ -69,9 +83,20 @@ namespace PlainOldStoreApp.Ui
                     //Customer customerLookUpName = new Customer(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2, customerRepository);
                     //List<Customer> foundCoustomers = customerLookUpName.LookUpName();
 
-                    HttpResponseMessage responseCustomers = await httpClient.GetAsync($"https://localhost:7129/api/customer/{nameOrEmailTuple.Item1}&{nameOrEmailTuple.Item2}");
-                    string jsonFoundCustomers = await responseCustomers.Content.ReadAsStringAsync();
-                    List<Customer> foundCustomers = JsonSerializer.Deserialize<List<Customer>>(jsonFoundCustomers);
+                    //HttpResponseMessage responseCustomers = await httpClient.GetAsync($"https://localhost:7129/api/customer/{nameOrEmailTuple.Item1}&{nameOrEmailTuple.Item2}");
+                    //string jsonFoundCustomers = await responseCustomers.Content.ReadAsStringAsync();
+                    //List<Customer> foundCustomers = JsonSerializer.Deserialize<List<Customer>>(jsonFoundCustomers);
+
+                    List<Customer> foundCustomers;
+                    try
+                    {
+                        foundCustomers = await plainOldStoreService.GetAllCustomersByFullName(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2);
+                    }
+                    catch(ServerException)
+                    {
+                        Console.WriteLine("Unable to connect to server");
+                        break;
+                    }
                     string? emailLookUP;
                     Tuple<string, string> emailTuple;
                     if (foundCustomers.Count >= 1)
