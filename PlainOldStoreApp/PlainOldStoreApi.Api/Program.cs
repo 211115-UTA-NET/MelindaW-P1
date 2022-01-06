@@ -17,7 +17,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ICustomerRepository>(sp => new SqlCustomerRepository(connectionString));
+//Add the repository services
+builder.Services.AddSingleton<ICustomerRepository>(spcr => new SqlCustomerRepository(connectionString));
+builder.Services.AddSingleton<IStoreRepository>(spsr => new SqlStoreRepository(connectionString));
 
 var app = builder.Build();
 
