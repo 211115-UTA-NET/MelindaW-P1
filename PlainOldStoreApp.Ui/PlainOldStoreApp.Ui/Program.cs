@@ -8,7 +8,6 @@ namespace PlainOldStoreApp.Ui
         {
             Uri server = new Uri("https://localhost:7129");
 
-            ICustomerService plainOldStoreService = new CustomerService(server);
             bool isRunning = true;
             Console.WriteLine("Welcome to Plain Old Store!");
             Console.WriteLine("What can I help you with today?");
@@ -20,20 +19,20 @@ namespace PlainOldStoreApp.Ui
                 Console.WriteLine("1. Place Order\n2. Add Customer\n3. Lookup Order\n4. Exit");
                 string? slection = Console.ReadLine()?.Trim().ToLower();
                 Console.WriteLine();
-                isRunning = await MainMenu(slection, isRunning, plainOldStoreService);
+                isRunning = await MainMenu(slection, isRunning, server);
             }
         }
-        internal static async Task<bool> MainMenu(string? slection, bool isRunning, ICustomerService plainOldStoreService)
+        internal static async Task<bool> MainMenu(string? slection, bool isRunning, Uri server)
         {
             switch (slection)
             {
                 case "1":
                 case "place order":
-                    await PlaneOldShop.PlaceOrder(plainOldStoreService);
+                    await PlaneOldShop.PlaceOrder(server);
                     break;
                 case "2":
                 case "add customer":
-                    await PlaneOldShop.AddCustomer(plainOldStoreService);
+                    await PlaneOldShop.AddCustomer(server);
                     break;
                 case "3":
                 case "lookup order":

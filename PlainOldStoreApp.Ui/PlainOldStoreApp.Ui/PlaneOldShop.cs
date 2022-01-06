@@ -5,8 +5,10 @@ namespace PlainOldStoreApp.Ui
 {
     internal class PlaneOldShop
     {
-        internal async static Task PlaceOrder(ICustomerService plainOldStoreService)
+        internal async static Task PlaceOrder(Uri server)
         {
+            ICustomerService customerService = new CustomerService(server);
+            IStoreService storeService = new StoreService(server);
             bool isOrdering = true;
             while (isOrdering)
             {
@@ -48,7 +50,7 @@ namespace PlainOldStoreApp.Ui
                     bool foundEmail;
                     try
                     {
-                        foundEmail = await plainOldStoreService.GetIfEmailFound(nameOrEmailTuple.Item2);
+                        foundEmail = await customerService.GetIfEmailFound(nameOrEmailTuple.Item2);
                     }
                     catch (ServerException)
                     {
@@ -75,7 +77,7 @@ namespace PlainOldStoreApp.Ui
                     List<Customer> foundCustomers;
                     try
                     {
-                        foundCustomers = await plainOldStoreService.GetAllCustomersByFullName(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2);
+                        foundCustomers = await customerService.GetAllCustomersByFullName(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2);
                     }
                     catch(ServerException)
                     {
@@ -145,7 +147,7 @@ namespace PlainOldStoreApp.Ui
                 Guid customerId;
                 try
                 {
-                    customerId = await plainOldStoreService.GetCustomerId(email);
+                    customerId = await customerService.GetCustomerId(email);
                 }
                 catch (ServerException)
                 {
@@ -153,29 +155,35 @@ namespace PlainOldStoreApp.Ui
                     break;
                 }
 
-
-                //IStoreRepository storeRepository = new SqlStoreRepository(connectionString);
-                //Store store = new Store(storeRepository);
-                //Dictionary<int, string> stores = store.GetStoresFromDatabase();
-                //Console.WriteLine("Please choose a store location.");
-                //foreach (var s in stores)
-                //{
-                //    Console.WriteLine(s);
-                //}
-                //int numberOfStores = stores.Count;
-                //int storeLocation = 0;
-                //bool isInt = false;
-                //while (!isInt)
-                //{
-                //    isInt = int.TryParse(Console.ReadLine(), out storeLocation);
-                //    if (isInt == false || numberOfStores < 0 || storeLocation > numberOfStores)
-                //    {
-                //        Console.WriteLine("Invalid input.");
-                //        Console.WriteLine("Please choose a store location.");
-                //        Console.WriteLine();
-                //        isInt = false;
-                //    }
-                //}
+                Dictionary<int, string> stores;
+                try
+                {
+                    stores = await storeService.GetStoreListAsync();
+                }
+                catch
+                {
+                    Console.WriteLine("Unable to connect to server");
+                    break;
+                }
+                Console.WriteLine("Please choose a store location.");
+                foreach (var s in stores)
+                {
+                    Console.WriteLine(s);
+                }
+                int numberOfStores = stores.Count;
+                int storeLocation = 0;
+                bool isInt = false;
+                while (!isInt)
+                {
+                    isInt = int.TryParse(Console.ReadLine(), out storeLocation);
+                    if (isInt == false || numberOfStores < 0 || storeLocation > numberOfStores || storeLocation <= 0)
+                    {
+                        Console.WriteLine("Invalid input.");
+                        Console.WriteLine("Please choose a store location.");
+                        Console.WriteLine();
+                        isInt = false;
+                    }
+                }
                 //IProductRepository productRepository = new SqlProductRepository(connectionString);
                 //Product products = new Product(storeLocation, productRepository);
                 //List<Product> allStoreProducts = products.GetStoreInventory();
@@ -319,8 +327,9 @@ namespace PlainOldStoreApp.Ui
                 break;
             }
         }
-        internal async static Task AddCustomer(ICustomerService plainOldStoreService)
+        internal async static Task AddCustomer(Uri server)
         {
+            ICustomerService plainOldStoreService = new CustomerService(server);
             bool isAdding = true;
             while (isAdding)
             {
