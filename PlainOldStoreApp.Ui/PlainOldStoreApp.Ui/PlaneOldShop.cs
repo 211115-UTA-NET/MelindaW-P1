@@ -5,12 +5,8 @@ namespace PlainOldStoreApp.Ui
 {
     internal class PlaneOldShop
     {
-        internal async static Task PlaceOrder(string connectionString)
+        internal async static Task PlaceOrder(ICustomerService plainOldStoreService)
         {
-            Uri server = new Uri("https://localhost:7129");
-
-            IPlainOldStoreService plainOldStoreService = new PlainOldStoreService(server);
-
             bool isOrdering = true;
             while (isOrdering)
             {
@@ -140,14 +136,22 @@ namespace PlainOldStoreApp.Ui
                     }
                     else
                     {
-                        Console.WriteLine("No account was found with this name");
+                        Console.WriteLine("No account was found with this name.");
                         Console.WriteLine();
                         break;
                     }
                 }
-                //Customer getCustomerID = new Customer(email, customerRepository);
-                //Guid customerId = getCustomerID.GetCustomerID();
 
+                Guid customerId;
+                try
+                {
+                    customerId = await plainOldStoreService.GetCustomerId(email);
+                }
+                catch (ServerException)
+                {
+                    Console.WriteLine("Unable to connect to server");
+                    break;
+                }
 
 
                 //IStoreRepository storeRepository = new SqlStoreRepository(connectionString);
@@ -315,242 +319,257 @@ namespace PlainOldStoreApp.Ui
                 break;
             }
         }
-        //internal static void AddCustomer(string connectionString)
-        //{
-        //    bool isAdding = true;
-        //    while (isAdding)
-        //    {
-        //        string firstName;
-        //        string lastName;
-        //        string email = "";
-        //        Console.WriteLine("Please enter in the customer's name or email.");
-        //        string? nameOrEmail = Console.ReadLine()?.Trim();
-        //        Console.WriteLine();
-        //        string? tryAgain;
-        //        Tuple<string, string> nameOrEmailTuple = ValidateInput.ValidateNameOrEmail(nameOrEmail);
-        //        bool isValidateingNameOrEmail = true;
-        //        while (isValidateingNameOrEmail)
-        //        {
-        //            if (nameOrEmailTuple.Item1 == "false")
-        //            {
-        //                Console.WriteLine("You did not enter in a full name or email.");
-        //                Console.WriteLine("Would you like to try again?");
-        //                Console.WriteLine("Yes(Y) or No(N)?");
-        //                tryAgain = Console.ReadLine()?.Trim().ToLower();
-        //                Console.WriteLine();
-        //                if (tryAgain == "yes" || tryAgain == "y")
-        //                {
-        //                    Console.WriteLine("Please enter full name or email.");
-        //                    nameOrEmail = Console.ReadLine()?.Trim();
-        //                    Console.WriteLine();
-        //                    nameOrEmailTuple = ValidateInput.ValidateNameOrEmail(nameOrEmail);
-        //                }
-        //                else
-        //                {
-        //                    break;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                isValidateingNameOrEmail = false;
-        //            }
-        //        }
-        //        ICustomerRepository customerRepository = new SqlCustomerRepository(connectionString);
-        //        if (nameOrEmailTuple.Item1 == "email")
-        //        {
-        //            Customer customerLookUpEmail = new Customer(nameOrEmailTuple.Item2, customerRepository);
-        //            bool foundEmail = customerLookUpEmail.LookUpEmail();
-        //            if (foundEmail)
-        //            {
-        //                Console.WriteLine("The email you entered is already associated with an account.");
-        //                Console.WriteLine("Please use that account to order");
-        //                Console.WriteLine();
-        //                break;
-        //            }
-        //            else
-        //            {
-        //                email = nameOrEmailTuple.Item2;
-        //                Console.WriteLine("Please enter first name and last name.");
-        //                string? name = Console.ReadLine();
-        //                Console.WriteLine();
-        //                Tuple<string, string> fullname = ValidateInput.VaildateName(name);
-        //                bool isValidateingName = true;
-        //                while (isValidateingName)
-        //                {
-        //                    if (string.IsNullOrWhiteSpace(fullname.Item1) || string.IsNullOrWhiteSpace(fullname.Item2))
-        //                    {
-        //                        Console.WriteLine("You did not enter you fist and last name.");
-        //                        Console.WriteLine("Would you like to try again?");
-        //                        Console.WriteLine("Yes(Y) or No(N)?");
-        //                        tryAgain = Console.ReadLine()?.Trim();
-        //                        Console.WriteLine();
-        //                        if (tryAgain == "yes" || tryAgain == "y")
-        //                        {
-        //                            Console.WriteLine("Please enter your first name and last name.");
-        //                            name = Console.ReadLine()?.Trim();
-        //                            Console.WriteLine();
-        //                            fullname = ValidateInput.VaildateName(name);
-        //                        }
-        //                        else
-        //                        {
-        //                            break;
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        isValidateingName = false;
-        //                    }
-        //                }
-        //                firstName = fullname.Item1;
-        //                lastName = fullname.Item2;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            Customer customerLookUpName = new Customer(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2, customerRepository);
-        //            List<Customer> foundCoustomers = customerLookUpName.LookUpName();
-        //            string? emailLookUP;
-        //            Tuple<string, string> emailTuple;
-        //            if (foundCoustomers.Count >= 1)
-        //            {
-        //                Console.WriteLine("The name you entered is already associated with an account.");
-        //                Console.WriteLine("Please enter email to see if account exists.");
-        //                emailLookUP = Console.ReadLine();
-        //                Console.WriteLine();
-        //                emailTuple = ValidateInput.ValidateEmail(emailLookUP);
-        //                bool isValidateingEmail = true;
-        //                while (isValidateingEmail)
-        //                {
-        //                    if (emailTuple.Item1 == "false")
-        //                    {
-        //                        Console.WriteLine("Your did not enter in an email.");
-        //                        Console.WriteLine("Would you like to try again?");
-        //                        Console.WriteLine("Yes(Y) or No(N)?");
-        //                        tryAgain = Console.ReadLine()?.Trim().ToLower();
-        //                        Console.WriteLine();
-        //                        if (tryAgain == "yes" || tryAgain == "y")
-        //                        {
-        //                            Console.WriteLine("Please enter your email.");
-        //                            emailLookUP = Console.ReadLine()?.Trim();
-        //                            Console.WriteLine();
-        //                            emailTuple = ValidateInput.ValidateEmail(emailLookUP);
-        //                        }
-        //                        else
-        //                        {
-        //                            break;
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        isValidateingEmail = false;
-        //                    }
-        //                }
-        //                foreach (Customer customer in foundCoustomers)
-        //                {
-        //                    if (customer.Email == emailTuple.Item2)
-        //                    {
-        //                        Console.WriteLine("Please use account associated with email to order.");
-        //                        Console.WriteLine();
-        //                        email = "anEmailWasFound";
-        //                        break;
-        //                    }
-        //                }
-        //                if (email == "anEmailWasFound")
-        //                {
-        //                    break;
-        //                }
-        //                email = emailTuple.Item2;
-        //            }
-        //            firstName = nameOrEmailTuple.Item1;
-        //            lastName = nameOrEmailTuple.Item2;
-        //            if (email == "")
-        //            {
-        //                Console.WriteLine("Please enter an email.");
-        //                emailLookUP = Console.ReadLine();
-        //                Console.WriteLine();
-        //                emailTuple = ValidateInput.ValidateEmail(emailLookUP);
-        //                bool isValidateingEmail = true;
-        //                while (isValidateingEmail)
-        //                {
-        //                    if (emailTuple.Item1 == "false")
-        //                    {
-        //                        Console.WriteLine("Your did not enter in an email.");
-        //                        Console.WriteLine("Would you like to try again?");
-        //                        Console.WriteLine("Yes(Y) or No(N)?");
-        //                        tryAgain = Console.ReadLine()?.Trim().ToLower();
-        //                        Console.WriteLine();
-        //                        if (tryAgain == "yes" || tryAgain == "y")
-        //                        {
-        //                            Console.WriteLine("Please enter your email.");
-        //                            emailLookUP = Console.ReadLine()?.Trim();
-        //                            Console.WriteLine();
-        //                            emailTuple = ValidateInput.ValidateEmail(emailLookUP);
-        //                        }
-        //                        else
-        //                        {
-        //                            break;
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        isValidateingEmail = false;
-        //                    }
-        //                }
-        //                email = emailTuple.Item2;
-        //            }
-        //        }
-        //        Console.WriteLine("Please enter address 1.");
-        //        string? address1 = Console.ReadLine();
-        //        Console.WriteLine();
-        //        Console.WriteLine("Please enter city.");
-        //        string? city = Console.ReadLine();
-        //        Console.WriteLine();
-        //        Console.WriteLine("Please enter state.");
-        //        string? state = Console.ReadLine();
-        //        Console.WriteLine();
-        //        Console.WriteLine("Please enter zip code.");
-        //        string? zip = Console.ReadLine();
-        //        Console.WriteLine();
+        internal async static Task AddCustomer(ICustomerService plainOldStoreService)
+        {
+            bool isAdding = true;
+            while (isAdding)
+            {
+                string firstName;
+                string lastName;
+                string email = "";
+                Console.WriteLine("Please enter in the customer's name or email.");
+                string? nameOrEmail = Console.ReadLine()?.Trim();
+                Console.WriteLine();
+                string? tryAgain;
+                Tuple<string, string> nameOrEmailTuple = ValidateInput.ValidateNameOrEmail(nameOrEmail);
+                bool isValidateingNameOrEmail = true;
+                while (isValidateingNameOrEmail)
+                {
+                    if (nameOrEmailTuple.Item1 == "false")
+                    {
+                        Console.WriteLine("You did not enter in a full name or email.");
+                        Console.WriteLine("Would you like to try again?");
+                        Console.WriteLine("Yes(Y) or No(N)?");
+                        tryAgain = Console.ReadLine()?.Trim().ToLower();
+                        Console.WriteLine();
+                        if (tryAgain == "yes" || tryAgain == "y")
+                        {
+                            Console.WriteLine("Please enter full name or email.");
+                            nameOrEmail = Console.ReadLine()?.Trim();
+                            Console.WriteLine();
+                            nameOrEmailTuple = ValidateInput.ValidateNameOrEmail(nameOrEmail);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        isValidateingNameOrEmail = false;
+                    }
+                }
 
-        //        string address = ValidateInput.ValidateAddress(address1, city, state, zip).Result;
+                if (nameOrEmailTuple.Item1 == "email")
+                {
+                    bool foundEmail;
+                        try
+                        {
+                            foundEmail = await plainOldStoreService.GetIfEmailFound(nameOrEmailTuple.Item2);
+                        }
+                        catch (ServerException)
+                        {
+                            Console.WriteLine("Unable to connect to server.");
+                            break;
+                        }
+                    if (foundEmail)
+                    {
+                        Console.WriteLine("The email you entered is already associated with an account.");
+                        Console.WriteLine("Please use that account to order");
+                        Console.WriteLine();
+                        break;
+                    }
+                    else
+                    {
+                        email = nameOrEmailTuple.Item2;
+                        Console.WriteLine("Please enter first name and last name.");
+                        string? name = Console.ReadLine();
+                        Console.WriteLine();
+                        Tuple<string, string> fullname = ValidateInput.VaildateName(name);
+                        bool isValidateingName = true;
+                        while (isValidateingName)
+                        {
+                            if (string.IsNullOrWhiteSpace(fullname.Item1) || string.IsNullOrWhiteSpace(fullname.Item2))
+                            {
+                                Console.WriteLine("You did not enter you fist and last name.");
+                                Console.WriteLine("Would you like to try again?");
+                                Console.WriteLine("Yes(Y) or No(N)?");
+                                tryAgain = Console.ReadLine()?.Trim();
+                                Console.WriteLine();
+                                if (tryAgain == "yes" || tryAgain == "y")
+                                {
+                                    Console.WriteLine("Please enter your first name and last name.");
+                                    name = Console.ReadLine()?.Trim();
+                                    Console.WriteLine();
+                                    fullname = ValidateInput.VaildateName(name);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                isValidateingName = false;
+                            }
+                        }
+                        firstName = fullname.Item1;
+                        lastName = fullname.Item2;
+                    }
+                }
+                else
+                {
+                    List<Customer> foundCustomers;
+                    try
+                    {
+                        foundCustomers = await plainOldStoreService.GetAllCustomersByFullName(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2);
+                    }
+                    catch (ServerException)
+                    {
+                        Console.WriteLine("Unable to connect to server");
+                        break;
+                    }
+                    string? emailLookUP;
+                    Tuple<string, string> emailTuple;
+                    if (foundCustomers.Count >= 1)
+                    {
+                        Console.WriteLine("The name you entered is already associated with an account.");
+                        Console.WriteLine("Please enter email to see if account exists.");
+                        emailLookUP = Console.ReadLine();
+                        Console.WriteLine();
+                        emailTuple = ValidateInput.ValidateEmail(emailLookUP);
+                        bool isValidateingEmail = true;
+                        while (isValidateingEmail)
+                        {
+                            if (emailTuple.Item1 == "false")
+                            {
+                                Console.WriteLine("Your did not enter in an email.");
+                                Console.WriteLine("Would you like to try again?");
+                                Console.WriteLine("Yes(Y) or No(N)?");
+                                tryAgain = Console.ReadLine()?.Trim().ToLower();
+                                Console.WriteLine();
+                                if (tryAgain == "yes" || tryAgain == "y")
+                                {
+                                    Console.WriteLine("Please enter your email.");
+                                    emailLookUP = Console.ReadLine()?.Trim();
+                                    Console.WriteLine();
+                                    emailTuple = ValidateInput.ValidateEmail(emailLookUP);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                isValidateingEmail = false;
+                            }
+                        }
+                        foreach (Customer customer in foundCustomers)
+                        {
+                            if (customer.Email == emailTuple.Item2)
+                            {
+                                Console.WriteLine("Please use account associated with email to order.");
+                                Console.WriteLine();
+                                email = "anEmailWasFound";
+                                break;
+                            }
+                        }
+                        if (email == "anEmailWasFound")
+                        {
+                            break;
+                        }
+                        email = emailTuple.Item2;
+                    }
+                    firstName = nameOrEmailTuple.Item1;
+                    lastName = nameOrEmailTuple.Item2;
+                    if (email == "")
+                    {
+                        Console.WriteLine("Please enter an email.");
+                        emailLookUP = Console.ReadLine();
+                        Console.WriteLine();
+                        emailTuple = ValidateInput.ValidateEmail(emailLookUP);
+                        bool isValidateingEmail = true;
+                        while (isValidateingEmail)
+                        {
+                            if (emailTuple.Item1 == "false")
+                            {
+                                Console.WriteLine("Your did not enter in an email.");
+                                Console.WriteLine("Would you like to try again?");
+                                Console.WriteLine("Yes(Y) or No(N)?");
+                                tryAgain = Console.ReadLine()?.Trim().ToLower();
+                                Console.WriteLine();
+                                if (tryAgain == "yes" || tryAgain == "y")
+                                {
+                                    Console.WriteLine("Please enter your email.");
+                                    emailLookUP = Console.ReadLine()?.Trim();
+                                    Console.WriteLine();
+                                    emailTuple = ValidateInput.ValidateEmail(emailLookUP);
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                isValidateingEmail = false;
+                            }
+                        }
+                        email = emailTuple.Item2;
+                    }
+                }
+                Console.WriteLine("Please enter address 1.");
+                string? address1 = Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine("Please enter city.");
+                string? city = Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine("Please enter state.");
+                string? state = Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine("Please enter zip code.");
+                string? zip = Console.ReadLine();
+                Console.WriteLine();
 
-        //        if (string.IsNullOrWhiteSpace(address)) { break; }
+                string address = await ValidateInput.ValidateAddress(address1, city, state, zip);
 
-        //        address1 = address.Split("\n")[0];
-        //        city = address.Split("\n")[1];
-        //        state = address.Split("\n")[2];
-        //        zip = address.Split("\n")[3] + "-" + address.Split("\n")[4];
+                if (string.IsNullOrWhiteSpace(address)) { break; }
 
-        //        Console.WriteLine("Please verify that the name, email, and address were entered correctly.");
-        //        Console.WriteLine();
-        //        Console.WriteLine($"{firstName} {lastName}\n{address1}\n{city}\n{state}\n{zip}\n{email}");
-        //        Console.WriteLine();
-        //        Console.WriteLine("Correct Yes(Y) or No(N)");
-        //        string? input = Console.ReadLine()?.ToLower().Trim();
-        //        Console.WriteLine();
-        //        if (input == "n" || input == "no")
-        //        {
-        //            break;
-        //        }
-        //        Customer newCustomer = new Customer(
-        //                firstName,
-        //                lastName,
-        //                address1,
-        //                city,
-        //                state,
-        //                zip,
-        //                email,
-        //                customerRepository);
+                address1 = address.Split("\n")[0];
+                city = address.Split("\n")[1];
+                state = address.Split("\n")[2];
+                zip = address.Split("\n")[3] + "-" + address.Split("\n")[4];
 
-        //        bool isAdded = newCustomer.AddCustomer();
-        //        if (isAdded)
-        //        {
-        //            Console.WriteLine("The customer was successfully registered.");
-        //            Console.WriteLine();
-        //        }
-        //        break;
-        //    }
-        //}
+                Console.WriteLine("Please verify that the name, email, and address were entered correctly.");
+                Console.WriteLine();
+                Console.WriteLine($"{firstName} {lastName}\n{address1}\n{city}\n{state}\n{zip}\n{email}");
+                Console.WriteLine();
+                Console.WriteLine("Correct Yes(Y) or No(N)");
+                string? input = Console.ReadLine()?.ToLower().Trim();
+                Console.WriteLine();
+                if (input == "n" || input == "no")
+                {
+                    break;
+                }
+                Customer newCustomer = new Customer(
+                        firstName,
+                        lastName,
+                        address1,
+                        city,
+                        state,
+                        zip,
+                        email);
+
+                bool isAdded = await plainOldStoreService.PostNewCustomer(newCustomer);
+                if (isAdded)
+                {
+                    Console.WriteLine("The customer was successfully registered.");
+                    Console.WriteLine();
+                }
+                break;
+        }
+    }
         //internal static void LookupOrder(string connectionString)
         //{
         //    Console.WriteLine("Would you like to lookup all orders of a customer or store?");

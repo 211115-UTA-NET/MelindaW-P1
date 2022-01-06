@@ -2,14 +2,16 @@
 using PlainOldStoreApp.Ui.Dots;
 using System.Net.Http.Json;
 using System.Net.Mime;
+using System.Text;
+using System.Text.Json;
 
 namespace PlainOldStoreApp.Ui
 {
-    internal class PlainOldStoreService : IPlainOldStoreService
+    internal class CustomerService : ICustomerService
     {
         private readonly HttpClient _httpClient = new();
 
-        public PlainOldStoreService(Uri serverUri)
+        public CustomerService(Uri serverUri)
         {
             _httpClient.BaseAddress = serverUri;
         }
@@ -125,6 +127,36 @@ namespace PlainOldStoreApp.Ui
             Guid customerId = await customerIdResponse.Content.ReadFromJsonAsync<Guid>();
 
             return customerId;
+        }
+
+        public async Task<bool> PostNewCustomer(Customer newCustomer)
+        {
+            Customer addCustomer = new()
+            {
+                FirstName = newCustomer.FirstName,
+                LastName = newCustomer.LastName,
+                Address1 = newCustomer.Address1,
+                City = newCustomer.City,
+                State = newCustomer.State,
+                ZipCode = newCustomer.ZipCode,
+                Email = newCustomer.Email
+            };
+            HttpRequestMessage newCustomerRequest = new(HttpMethod.Post, "/api/customer");
+            newCustomerRequest.Content = new StringContent(JsonSerializer.Serialize(addCustomer), Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            HttpResponseMessage newCustomerResponse;
+            try
+            {
+                newCustomerResponse = await _httpClient.SendAsync(newCustomerRequest);
+            }
+            catch (ServerException ex)
+            {
+                throw new ServerException("network error", ex);
+            }
+
+            var result = await newCustomerResponse.Content.ReadFromJsonAsync<bool>();
+
+            return result;
         }
     }
 }

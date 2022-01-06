@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using PlainOldStoreApi.Api.Dots;
 using PlainOldStoreApp.DataStorage;
 using System.ComponentModel.DataAnnotations;
 
@@ -48,23 +49,15 @@ namespace PlainOldStoreApi.Api.Controllers
 
         // POST: Add new customer
         [HttpPost]
-        public async Task<ActionResult<bool>> PostCustomer(
-            string firstName,
-            string lastName,
-            string address,
-            string city,
-            string state,
-            string zip,
-            string email)
+        public async Task<ActionResult<bool>> PostCustomer(AddCustomer addCustomer)
         {
             bool newCustomer;
-            if (!await _customerRepository.GetCustomerEmail(email))
+            if (!await _customerRepository.GetCustomerEmail(addCustomer.Email))
             {
-                newCustomer = await _customerRepository.AddNewCustomer(firstName, lastName, address, city, state, zip, email);
+                newCustomer = await _customerRepository.AddNewCustomer(addCustomer.FirstName, addCustomer.LastName, addCustomer.Address1, addCustomer.City, addCustomer.State, addCustomer.ZipCode, addCustomer.Email!);
                 return newCustomer;
             }
-
-            return BadRequest($"a customer with {email} already exists");
+            return BadRequest($"a customer with {addCustomer.Email} already exists");
         }
     }
 }
