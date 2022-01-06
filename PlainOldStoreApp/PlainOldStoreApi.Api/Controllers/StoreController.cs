@@ -15,5 +15,11 @@ namespace PlainOldStoreApi.Api.Controllers
         }
 
         // GET all stores
+        [HttpGet("stores")]
+        public async Task<ActionResult<Dictionary<int, string>>> GetAllStores()
+        {
+            Dictionary<int, string> stores = await _storeRepository.RetriveStores();
+            return stores;
+         }
     }
 }
