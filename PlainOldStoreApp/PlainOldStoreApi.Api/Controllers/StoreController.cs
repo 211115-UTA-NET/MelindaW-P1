@@ -20,6 +20,6 @@ namespace PlainOldStoreApi.Api.Controllers
         {
             Dictionary<int, string> stores = await _storeRepository.RetriveStores();
             return stores;
-         }
+        }
     }
 }

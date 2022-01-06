@@ -17,9 +17,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Add the repository services
-builder.Services.AddSingleton<ICustomerRepository>(spcr => new SqlCustomerRepository(connectionString));
-builder.Services.AddSingleton<IStoreRepository>(spsr => new SqlStoreRepository(connectionString));
+//Add the repository services to the container.
+builder.Services.AddSingleton<ICustomerRepository>(spCr => new SqlCustomerRepository(connectionString));
+builder.Services.AddSingleton<IStoreRepository>(spSr => new SqlStoreRepository(connectionString));
+builder.Services.AddSingleton<IProductRepository>(spPr => new SqlProductRepository(connectionString));
 
 var app = builder.Build();
 

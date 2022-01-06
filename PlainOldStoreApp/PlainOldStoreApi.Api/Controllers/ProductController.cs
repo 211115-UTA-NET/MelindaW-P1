@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PlainOldStoreApp.DataStorage;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlainOldStoreApi.Api.Controllers
 {
@@ -15,5 +16,11 @@ namespace PlainOldStoreApi.Api.Controllers
         }
 
         // GET by store id
+        [HttpGet("id")]
+        public async Task<ActionResult<List<Product>>> GetAllStoreProductsAsync([FromQuery, Required]int id)
+        {
+            List<Product> products = await _productRepository.GetAllStoreProducts(id);
+            return products;
+        }
     }
 }
