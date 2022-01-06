@@ -49,10 +49,6 @@ namespace PlainOldStoreApp.Ui
                 }
                 if (nameOrEmailTuple.Item1 == "email")
                 {
-                    //HttpResponseMessage responseEmail= await httpClient.GetAsync($"https://localhost:7129/api/customer?email={nameOrEmailTuple.Item2}");
-
-                    //string jsonFoundEmail = await responseEmail.Content.ReadAsStringAsync();
-                    //bool foundEmail = JsonSerializer.Deserialize<bool>(jsonFoundEmail);
                     bool foundEmail;
                     try
                     {
@@ -80,13 +76,6 @@ namespace PlainOldStoreApp.Ui
                 }
                 else
                 {
-                    //Customer customerLookUpName = new Customer(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2, customerRepository);
-                    //List<Customer> foundCoustomers = customerLookUpName.LookUpName();
-
-                    //HttpResponseMessage responseCustomers = await httpClient.GetAsync($"https://localhost:7129/api/customer/{nameOrEmailTuple.Item1}&{nameOrEmailTuple.Item2}");
-                    //string jsonFoundCustomers = await responseCustomers.Content.ReadAsStringAsync();
-                    //List<Customer> foundCustomers = JsonSerializer.Deserialize<List<Customer>>(jsonFoundCustomers);
-
                     List<Customer> foundCustomers;
                     try
                     {
@@ -158,6 +147,9 @@ namespace PlainOldStoreApp.Ui
                 }
                 //Customer getCustomerID = new Customer(email, customerRepository);
                 //Guid customerId = getCustomerID.GetCustomerID();
+
+
+
                 //IStoreRepository storeRepository = new SqlStoreRepository(connectionString);
                 //Store store = new Store(storeRepository);
                 //Dictionary<int, string> stores = store.GetStoresFromDatabase();

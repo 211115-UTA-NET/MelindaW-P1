@@ -55,12 +55,12 @@ namespace PlainOldStoreApp.Ui
 
         public async Task<List<Customer>> GetAllCustomersByFullName(string firstName, string lastName)
         {
-            Dictionary<string, string> query = new()
+            Dictionary<string, string> customersQuery = new()
             {
                 ["firstName"] = firstName,
                 ["lastName"] = lastName
             };
-            string requestUri = QueryHelpers.AddQueryString("/api/customer/firstName&lastName", query);
+            string requestUri = QueryHelpers.AddQueryString("/api/customer/firstName&lastName", customersQuery);
 
             HttpRequestMessage customerRequest = new(HttpMethod.Get, requestUri);
 
@@ -91,6 +91,40 @@ namespace PlainOldStoreApp.Ui
             }
 
             return customers;
+        }
+
+        public async Task<Guid> GetCustomerId(string email)
+        {
+            Dictionary<string, string> customerIdQuery = new()
+            {
+                ["email"] = email
+            };
+            string requestUri = QueryHelpers.AddQueryString("/api/customer/id", customerIdQuery);
+
+            HttpRequestMessage customerIdRequest = new(HttpMethod.Get, requestUri);
+
+            customerIdRequest.Headers.Accept.Add(new (MediaTypeNames.Application.Json));
+
+            HttpResponseMessage customerIdResponse;
+            try
+            {
+                customerIdResponse = await _httpClient.SendAsync(customerIdRequest);
+            }
+            catch(ServerException ex)
+            {
+                throw new ServerException("network error", ex);
+            }
+
+            customerIdResponse.EnsureSuccessStatusCode();
+
+            if (customerIdResponse.Content.Headers.ContentType?.MediaType != MediaTypeNames.Application.Json)
+            {
+                throw new ServerException();
+            }
+
+            Guid customerId = await customerIdResponse.Content.ReadFromJsonAsync<Guid>();
+
+            return customerId;
         }
     }
 }
