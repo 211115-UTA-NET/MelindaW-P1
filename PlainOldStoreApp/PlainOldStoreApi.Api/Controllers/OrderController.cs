@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PlainOldStoreApi.Api.Dtos;
 using PlainOldStoreApp.DataStorage;
 
 namespace PlainOldStoreApi.Api.Controllers
@@ -8,10 +9,12 @@ namespace PlainOldStoreApi.Api.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly Guid _ordersInvoiceID;
 
         public OrderController(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
+            _ordersInvoiceID = Guid.NewGuid();
         }
 
         // GET by id
@@ -20,9 +23,16 @@ namespace PlainOldStoreApi.Api.Controllers
 
         // POST all customer orders
         [HttpPost("order")]
-        public async Task<ActionResult<Tuple<List<Order>, string>>> POSTAllOrders(Guid CustomerId, Guid ordersInvoiceID, int storeId, List<Order> orders)
+        public async Task<ActionResult<Tuple<List<Order>, string>>> POSTAllOrders(AddOrder newOrder)
         {
-            Tuple<List<Order>, string> postAllOrders = await _orderRepository.AddAllOrders(CustomerId, ordersInvoiceID, storeId, orders);
+            Guid customerId = newOrder.CustomerId;
+            int storeId = newOrder.StoreLocation;
+
+            List<Order> orders = new List<Order>();
+            
+            orders.Add(new(newOrder.ProductId, newOrder.ProductPrice, newOrder.ProductQuantiy));
+            
+            Tuple<List<Order>, string> postAllOrders = await _orderRepository.AddAllOrders(customerId, _ordersInvoiceID, storeId, orders);
 
             return postAllOrders;
         }

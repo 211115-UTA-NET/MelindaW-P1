@@ -28,11 +28,11 @@ namespace PlainOldStoreApp.Ui
             {
                 case "1":
                 case "place order":
-                    await PlaneOldShop.PlaceOrder(server);
+                    await PlainOldShop.PlaceOrder(server);
                     break;
                 case "2":
                 case "add customer":
-                    await PlaneOldShop.AddCustomer(server);
+                    await PlainOldShop.AddCustomer(server);
                     break;
                 case "3":
                 case "lookup order":

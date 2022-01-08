@@ -1,5 +1,4 @@
-﻿//using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using PlainOldStoreApp.Ui.Dots;
 using System.Net.Http.Json;
 using System.Net.Mime;
@@ -143,6 +142,7 @@ namespace PlainOldStoreApp.Ui
                 Email = newCustomer.Email
             };
             HttpRequestMessage newCustomerRequest = new(HttpMethod.Post, "/api/customer");
+
             newCustomerRequest.Content = new StringContent(JsonSerializer.Serialize(addCustomer), Encoding.UTF8, MediaTypeNames.Application.Json);
 
             HttpResponseMessage newCustomerResponse;
@@ -155,7 +155,7 @@ namespace PlainOldStoreApp.Ui
                 throw new ServerException("network error", ex);
             }
 
-            var result = await newCustomerResponse.Content.ReadFromJsonAsync<bool>();
+            bool result = await newCustomerResponse.Content.ReadFromJsonAsync<bool>();
 
             return result;
         }

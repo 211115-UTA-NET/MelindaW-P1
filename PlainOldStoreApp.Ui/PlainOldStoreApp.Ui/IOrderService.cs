@@ -9,6 +9,6 @@ namespace PlainOldStoreApp.Ui
 {
     internal interface IOrderService
     {
-        Task<Tuple<List<Order>, string>> PostAllOrders(Guid customerId, int storeLocation, List<Order> ordersMade);
+        Task<Tuple<List<Order>, string>> PostAllOrders(List<Order> ordersMade);
     }
 }

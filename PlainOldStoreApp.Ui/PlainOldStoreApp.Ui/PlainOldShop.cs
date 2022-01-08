@@ -4,13 +4,14 @@ using System.Text.Json;
 
 namespace PlainOldStoreApp.Ui
 {
-    internal class PlaneOldShop
+    internal class PlainOldShop
     {
         internal async static Task PlaceOrder(Uri server)
         {
             ICustomerService customerService = new CustomerService(server);
             IStoreService storeService = new StoreService(server);
             IProductService productService = new ProductService(server);
+            IOrderService orderService = new OrderService(server);
             bool isOrdering = true;
             while (isOrdering)
             {
@@ -312,27 +313,33 @@ namespace PlainOldStoreApp.Ui
                         isOrderingProducts = false;
                     }
                 }
-            //IOrderRepository orderRepository = new SqlOrderRepository(connectionString);
-            //Order orders = new Order(orderRepository);
-            //List<Order> ordersMade = new List<Order>();
-            //foreach (Product product in amountOfProductsOrdered)
-            //{
-            //    ordersMade.Add(new(product.ProductId, product.ProductPrice, product.ProductQuantiy));
-            //}
-            //Tuple<List<Order>, string> getOrders = orders.PlaceCustomerOreder(customerId, storeLocation, ordersMade);
-
-            //Console.WriteLine("The order has been submitted.");
-            //Console.WriteLine("Order Summery:");
-            //Console.WriteLine();
-            //foreach (Order order in getOrders.Item1)
-            //{
-            //    Console.WriteLine(string.Format("{0,-39} | {1,-30} | {2:C2}", order.ProductName, order.Quantity, order.ProductPrice));
-            //}
-            //Console.WriteLine(getOrders.Item2);
-            //Console.WriteLine();
-            //Console.WriteLine("Thanks for placing an order.");
-            //Console.WriteLine();
-            break;
+                List<Order> ordersMade = new List<Order>();
+                foreach (Product product in amountOfProductsOrdered)
+                {
+                    ordersMade.Add(new(customerId, storeLocation, product.ProductId, product.ProductPrice, product.ProductQuantiy));
+                }
+                Tuple<List<Order>, string> getOrders;
+                try
+                {
+                    getOrders = await orderService.PostAllOrders(ordersMade);
+                }
+                catch (ServerException)
+                {
+                    Console.WriteLine("Unable to connect to server");
+                    break;
+                }
+                //Console.WriteLine("The order has been submitted.");
+                //Console.WriteLine("Order Summery:");
+                //Console.WriteLine();
+                //foreach (Order order in getOrders.Item1)
+                //{
+                //    Console.WriteLine(string.Format("{0,-39} | {1,-30} | {2:C2}", order.ProductName, order.Quantity, order.ProductPrice));
+                //}
+                //Console.WriteLine(getOrders.Item2);
+                //Console.WriteLine();
+                //Console.WriteLine("Thanks for placing an order.");
+                //Console.WriteLine();
+                break;
             }
         }
         internal async static Task AddCustomer(Uri server)

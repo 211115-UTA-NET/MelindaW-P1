@@ -2,7 +2,7 @@
 {
     public interface IOrderRepository
     {
-        Task<Tuple<List<Order>, string>> AddAllOrders(Guid customerId, Guid ordersInvoiceId, int storeId, List<Order> orders);
+        Task<Tuple<List<Order>, string>> AddAllOrders(Guid? customerId, Guid ordersInvoiceId, int? storeId, List<Order> orders);
 
         Task<List<Order>> GetAllStoreOrders(int storeID);
 

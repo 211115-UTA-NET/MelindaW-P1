@@ -1,8 +1,12 @@
-﻿using PlainOldStoreApp.Ui.Dtos;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using PlainOldStoreApp.Ui.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
+using System.Net.Mime;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PlainOldStoreApp.Ui
@@ -15,8 +19,48 @@ namespace PlainOldStoreApp.Ui
         {
             _httpClient.BaseAddress = serverUri;
         }
-        public Task<Tuple<List<Order>, string>> PostAllOrders(int customerId, int storeLocation, List<Order> ordersMade)
+        public async Task<Tuple<List<Order>, string>> PostAllOrders(List<Order> ordersMade)
         {
+
+            foreach (var order in ordersMade)
+            {
+                Order addQuery = new()
+                {
+                    CustomerId = order.CustomerId,
+                    StoreLocation = order.StoreLocation,
+                    ProductId = order.ProductId,
+                    ProductPrice = order.ProductPrice,
+                    ProductQuantiy = order.ProductQuantiy
+                };
+
+                HttpRequestMessage orderRequest = new(HttpMethod.Post, "/api/Order/order");
+
+                orderRequest.Content = new StringContent(JsonSerializer.Serialize(addQuery), Encoding.UTF8, MediaTypeNames.Application.Json);
+
+                HttpResponseMessage orderResponse;
+                try
+                {
+                    orderResponse = await _httpClient.SendAsync(orderRequest);
+                }
+                catch (ServerException ex)
+                {
+                    throw new ServerException("network error", ex);
+                }
+
+                if (orderResponse.Content.Headers.ContentType?.MediaType != MediaTypeNames.Application.Json)
+                {
+                    throw new ServerException();
+                }
+
+                Tuple<List<Order>, string> summery = await orderResponse.Content.ReadFromJsonAsync<Tuple<List<Order>, string>>();
+
+                if (summery == null)
+                {
+                    throw new ServerException();
+                }
+            }
+            //return summery;
+
             throw new NotImplementedException();
         }
     }

@@ -17,7 +17,7 @@ namespace PlainOldStoreApp.DataStorage
         /// <param name="storeId"></param>
         /// <param name="orders"></param>
         /// <returns></returns>
-        public async Task<Tuple<List<Order>, string>> AddAllOrders(Guid customerId, Guid ordersInvoiceID, int storeId, List<Order> orders)
+        public async Task<Tuple<List<Order>, string>> AddAllOrders(Guid? customerId, Guid ordersInvoiceID, int? storeId, List<Order> orders)
         {
             decimal? orderTotal = 0;
             foreach (Order order in orders)

@@ -2,11 +2,10 @@
 {
     public class Order
     {
-        internal Guid? CustomerId { get; }
-        internal int? StoreId { get; }
+        public Guid? CustomerId { get; }
+        public int? StoreId { get; }
         internal decimal? OrderTotal { get; }
-        internal Guid OrdersInvoiceID { get; }
-        internal int? ProductId { get; }
+        public int? ProductId { get; }
         public decimal? ProductPrice { get; }
         public int? Quantity { get; }
         public string? ProductName { get; }
@@ -27,7 +26,7 @@
             Quantity = quantity;
             ProductPrice = productPrice;
         }
-        public Order(int? productId, decimal productPrice, int? quantity)
+        public Order(int? productId, decimal? productPrice, int? quantity)
         {
             ProductId = productId;
             ProductPrice = productPrice;
