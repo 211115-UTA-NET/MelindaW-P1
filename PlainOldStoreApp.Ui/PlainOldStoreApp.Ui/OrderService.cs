@@ -21,21 +21,24 @@ namespace PlainOldStoreApp.Ui
         }
         public async Task<Tuple<List<Order>, string>> PostAllOrders(List<Order> ordersMade)
         {
-
-            foreach (var order in ordersMade)
-            {
-                Order addQuery = new()
-                {
-                    CustomerId = order.CustomerId,
-                    StoreLocation = order.StoreLocation,
-                    ProductId = order.ProductId,
-                    ProductPrice = order.ProductPrice,
-                    ProductQuantiy = order.ProductQuantiy
-                };
+            OrderList orderList = new OrderList();
+            orderList = new() { Orders = ordersMade };
+            //foreach (var order in ordersMade)
+            //{
+            //    Order addQuery = new()
+            //    {
+            //        CustomerId = order.CustomerId,
+            //        StoreLocation = order.StoreLocation,
+            //        ProductId = order.ProductId,
+            //        ProductPrice = order.ProductPrice,
+            //        ProductQuantiy = order.ProductQuantiy
+            //    };
+                
+            //}
 
                 HttpRequestMessage orderRequest = new(HttpMethod.Post, "/api/Order/order");
 
-                orderRequest.Content = new StringContent(JsonSerializer.Serialize(addQuery), Encoding.UTF8, MediaTypeNames.Application.Json);
+                orderRequest.Content = new StringContent(JsonSerializer.Serialize(orderList), Encoding.UTF8, MediaTypeNames.Application.Json);
 
                 HttpResponseMessage orderResponse;
                 try
@@ -58,7 +61,7 @@ namespace PlainOldStoreApp.Ui
                 {
                     throw new ServerException();
                 }
-            }
+            
             //return summery;
 
             throw new NotImplementedException();
