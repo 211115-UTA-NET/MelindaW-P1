@@ -19,5 +19,12 @@ namespace PlainOldStoreApi.Api.Controllers
         // GET by firstName lastName
 
         // POST all customer orders
+        [HttpPost("order")]
+        public async Task<ActionResult<Tuple<List<Order>, string>>> POSTAllOrders(Guid CustomerId, Guid ordersInvoiceID, int storeId, List<Order> orders)
+        {
+            Tuple<List<Order>, string> postAllOrders = await _orderRepository.AddAllOrders(CustomerId, ordersInvoiceID, storeId, orders);
+
+            return postAllOrders;
+        }
     }
 }
