@@ -53,12 +53,14 @@ namespace PlainOldStoreApp.DataStorage
                 try
                 { 
                     sqlTransaction.Rollback();
+                    return new Tuple<List<Order>, string>(orders, "Could not complete order at this time.");
                 }
                 catch
                 {
                     throw new Exception(ex.Message);
                 }
             }
+            sqlTransaction.Commit();
             await sqlConnection.CloseAsync();
 
             await sqlConnection.OpenAsync();
