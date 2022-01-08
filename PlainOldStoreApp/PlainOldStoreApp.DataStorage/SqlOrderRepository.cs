@@ -17,7 +17,7 @@ namespace PlainOldStoreApp.DataStorage
         /// <param name="storeId"></param>
         /// <param name="orders"></param>
         /// <returns></returns>
-        public async Task<Tuple<List<Order>, string>> AddAllOrders(Guid customerId, int storeId, List<Order> orders)
+        public async Task<Tuple<List<Order>, string>> AddAllOrders(Guid customerId, Guid ordersInvoiceID, int storeId, List<Order> orders)
         {
             decimal? orderTotal = 0;
             foreach (Order order in orders)
@@ -26,21 +26,59 @@ namespace PlainOldStoreApp.DataStorage
             }
 
             using SqlConnection sqlConnection = new(_connectionString);
+
+            string sqlUpdateString =
+                @"UPDATE Posa.Inventory
+                SET Quantity = (Quantity - @quantity)
+                WHERE StoreID=@storeID
+                AND ProductID=@ProductId;";
+
+            await sqlConnection.OpenAsync();
+            SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
+            try
+            {
+                foreach (Order order in orders)
+                {
+                    using SqlCommand sqlUpdateCommand = new(sqlUpdateString, sqlConnection, sqlTransaction);
+
+                    sqlUpdateCommand.Parameters.AddWithValue("@quantity", order.Quantity);
+                    sqlUpdateCommand.Parameters.AddWithValue("@storeID", storeId);
+                    sqlUpdateCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
+
+                    sqlUpdateCommand.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                try
+                { 
+                    sqlTransaction.Rollback();
+                }
+                catch
+                {
+                    throw new Exception(ex.Message);
+                }
+            }
+            await sqlConnection.CloseAsync();
+
             await sqlConnection.OpenAsync();
 
             using SqlCommand sqlCommand = new(
                 @"INSERT INTO Posa.OrdersInvoice
                 (
+                    OrdersInvoiceID,
                     CustomerID,
                     StoreID,
                     OrderTotal
                 )
                 VALUES
                 (
+                    @ordersInvoiceID,
                     @customerId,
                     @storeID,
                     @orderTotal);", sqlConnection);
 
+            sqlCommand.Parameters.AddWithValue("@ordersInvoiceID", ordersInvoiceID);
             sqlCommand.Parameters.AddWithValue("@customerId", customerId);
             sqlCommand.Parameters.AddWithValue("@storeID", storeId);
             sqlCommand.Parameters.AddWithValue("@orderTotal", orderTotal);
@@ -49,25 +87,25 @@ namespace PlainOldStoreApp.DataStorage
 
             await sqlConnection.CloseAsync();
 
-            await sqlConnection.OpenAsync();
-            using SqlCommand sqlReadCommand = new(
-                @"SELECT OrdersInvoiceID FROM Posa.OrdersInvoice
-                    WHERE CustomerID = @customerId
-                    AND StoreID = @storeID
-                    AND OrderTotal = @orderTotal;", sqlConnection);
+            //await sqlConnection.OpenAsync();
+            //using SqlCommand sqlReadCommand = new(
+            //    @"SELECT OrdersInvoiceID FROM Posa.OrdersInvoice
+            //        WHERE CustomerID = @customerId
+            //        AND StoreID = @storeID
+            //        AND OrderTotal = @orderTotal;", sqlConnection);
 
-            sqlReadCommand.Parameters.AddWithValue("@customerId", customerId);
-            sqlReadCommand.Parameters.AddWithValue("@storeID", storeId);
-            sqlReadCommand.Parameters.AddWithValue("@orderTotal", orderTotal);
+            //sqlReadCommand.Parameters.AddWithValue("@customerId", customerId);
+            //sqlReadCommand.Parameters.AddWithValue("@storeID", storeId);
+            //sqlReadCommand.Parameters.AddWithValue("@orderTotal", orderTotal);
 
-            using SqlDataReader reader = sqlReadCommand.ExecuteReader();
-            int ordersInvoiceId = 0;
-            if (await reader.ReadAsync())
-            {
-                ordersInvoiceId = reader.GetInt32(0);
-            }
+            //using SqlDataReader reader = sqlReadCommand.ExecuteReader();
+            //int ordersInvoiceId = 0;
+            //if (await reader.ReadAsync())
+            //{
+            //    ordersInvoiceId = reader.GetInt32(0);
+            //}
 
-            await sqlConnection.CloseAsync();
+            //await sqlConnection.CloseAsync();
 
             string sqlString =
                 @"INSERT INTO Posa.CustomerOrders
@@ -79,7 +117,7 @@ namespace PlainOldStoreApp.DataStorage
                 )
                 VALUES
                 (
-                    @ordersInvoiceId,
+                    @ordersInvoiceID,
                     @productId,
                     @productPrice,
                     @quantity);";
@@ -90,7 +128,7 @@ namespace PlainOldStoreApp.DataStorage
             {
                 using SqlCommand sqlCommandOrders = new(sqlString, sqlConnection);
 
-                sqlCommandOrders.Parameters.AddWithValue("@ordersInvoiceId", ordersInvoiceId);
+                sqlCommandOrders.Parameters.AddWithValue("@ordersInvoiceID", ordersInvoiceID);
                 sqlCommandOrders.Parameters.AddWithValue("@productId", order.ProductId);
                 sqlCommandOrders.Parameters.AddWithValue("@productPrice", order.ProductPrice);
                 sqlCommandOrders.Parameters.AddWithValue("@quantity", order.Quantity);
@@ -100,39 +138,19 @@ namespace PlainOldStoreApp.DataStorage
 
             await sqlConnection.CloseAsync();
 
-            string sqlUpdateString =
-                @"UPDATE Posa.Inventory
-                SET Quantity = (Quantity - @quantity)
-                WHERE StoreID=@storeID
-                AND ProductID=@ProductId;";
-
-            await sqlConnection.OpenAsync();
-
-            foreach (Order order in orders)
-            {
-                using SqlCommand sqlUpdateCommand = new(sqlUpdateString, sqlConnection);
-
-                sqlUpdateCommand.Parameters.AddWithValue("@quantity", order.Quantity);
-                sqlUpdateCommand.Parameters.AddWithValue("@storeID", storeId);
-                sqlUpdateCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
-
-                sqlUpdateCommand.ExecuteNonQuery();
-            }
-            await sqlConnection.CloseAsync();
-
             List<Order> orderItems = new List<Order>();
 
             string sqlGetOrderString =
                 @"SELECT ProductName, Quantity, Posa.CustomerOrders.ProductPrice
                     FROM Posa.CustomerOrders
                     INNER JOIN Posa.Products ON Posa.CustomerOrders.ProductID=Posa.Products.ProductID
-                    WHERE OrdersInvoiceID=@ordersInvoiceId;";
+                    WHERE OrdersInvoiceID=@ordersInvoiceID;";
 
             await sqlConnection.OpenAsync();
 
             using SqlCommand sqlGetOrderCommand = new(sqlGetOrderString, sqlConnection);
 
-            sqlGetOrderCommand.Parameters.AddWithValue("@ordersInvoiceId", ordersInvoiceId);
+            sqlGetOrderCommand.Parameters.AddWithValue("@ordersInvoiceID", ordersInvoiceID);
 
             using SqlDataReader readOrder = sqlGetOrderCommand.ExecuteReader();
 
@@ -157,7 +175,7 @@ namespace PlainOldStoreApp.DataStorage
 
             using SqlCommand sqlGetOrderSummery = new(sqlGetOrderSummeryString, sqlConnection);
 
-            sqlGetOrderSummery.Parameters.AddWithValue("@ordersInvoiceID", ordersInvoiceId);
+            sqlGetOrderSummery.Parameters.AddWithValue("@ordersInvoiceID", ordersInvoiceID);
 
             using SqlDataReader readSummery = sqlGetOrderSummery.ExecuteReader();
 
