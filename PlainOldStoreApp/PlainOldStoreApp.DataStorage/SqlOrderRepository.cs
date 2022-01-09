@@ -22,7 +22,7 @@ namespace PlainOldStoreApp.DataStorage
             decimal? orderTotal = 0;
             foreach (Order order in orders)
             {
-                orderTotal += order.ProductPrice * order.Quantity;
+                orderTotal += order.ProductPrice * order.ProductQuantiy;
             }
 
             using SqlConnection sqlConnection = new(_connectionString);
@@ -41,7 +41,7 @@ namespace PlainOldStoreApp.DataStorage
                 {
                     using SqlCommand sqlUpdateCommand = new(sqlUpdateString, sqlConnection, sqlTransaction);
 
-                    sqlUpdateCommand.Parameters.AddWithValue("@quantity", order.Quantity);
+                    sqlUpdateCommand.Parameters.AddWithValue("@quantity", order.ProductQuantiy);
                     sqlUpdateCommand.Parameters.AddWithValue("@storeID", storeId);
                     sqlUpdateCommand.Parameters.AddWithValue("@ProductId", order.ProductId);
 
@@ -89,26 +89,6 @@ namespace PlainOldStoreApp.DataStorage
 
             await sqlConnection.CloseAsync();
 
-            //await sqlConnection.OpenAsync();
-            //using SqlCommand sqlReadCommand = new(
-            //    @"SELECT OrdersInvoiceID FROM Posa.OrdersInvoice
-            //        WHERE CustomerID = @customerId
-            //        AND StoreID = @storeID
-            //        AND OrderTotal = @orderTotal;", sqlConnection);
-
-            //sqlReadCommand.Parameters.AddWithValue("@customerId", customerId);
-            //sqlReadCommand.Parameters.AddWithValue("@storeID", storeId);
-            //sqlReadCommand.Parameters.AddWithValue("@orderTotal", orderTotal);
-
-            //using SqlDataReader reader = sqlReadCommand.ExecuteReader();
-            //int ordersInvoiceId = 0;
-            //if (await reader.ReadAsync())
-            //{
-            //    ordersInvoiceId = reader.GetInt32(0);
-            //}
-
-            //await sqlConnection.CloseAsync();
-
             string sqlString =
                 @"INSERT INTO Posa.CustomerOrders
                 (
@@ -133,7 +113,7 @@ namespace PlainOldStoreApp.DataStorage
                 sqlCommandOrders.Parameters.AddWithValue("@ordersInvoiceID", ordersInvoiceID);
                 sqlCommandOrders.Parameters.AddWithValue("@productId", order.ProductId);
                 sqlCommandOrders.Parameters.AddWithValue("@productPrice", order.ProductPrice);
-                sqlCommandOrders.Parameters.AddWithValue("@quantity", order.Quantity);
+                sqlCommandOrders.Parameters.AddWithValue("@quantity", order.ProductQuantiy);
 
                 sqlCommandOrders.ExecuteNonQuery();
             }
@@ -143,10 +123,11 @@ namespace PlainOldStoreApp.DataStorage
             List<Order> orderItems = new List<Order>();
 
             string sqlGetOrderString =
-                @"SELECT ProductName, Quantity, Posa.CustomerOrders.ProductPrice
+                @"SELECT CustomerID, Posa.OrdersInvoice.StoreID, Posa.Products.ProductID, Posa.CustomerOrders.ProductPrice, ProductName, Quantity
                     FROM Posa.CustomerOrders
                     INNER JOIN Posa.Products ON Posa.CustomerOrders.ProductID=Posa.Products.ProductID
-                    WHERE OrdersInvoiceID=@ordersInvoiceID;";
+                    INNER JOIN Posa.OrdersInvoice ON Posa.CustomerOrders.OrdersInvoiceID=Posa.OrdersInvoice.OrdersInvoiceID
+                    WHERE OrdersInvoice.OrdersInvoiceID=@ordersInvoiceID;";
 
             await sqlConnection.OpenAsync();
 
@@ -159,9 +140,12 @@ namespace PlainOldStoreApp.DataStorage
             while (await readOrder.ReadAsync())
             {
                 orderItems.Add(new(
-                    readOrder.GetString(0),
+                    readOrder.GetGuid(0),
                     readOrder.GetInt32(1),
-                    readOrder.GetDecimal(2)));
+                    readOrder.GetInt32(2),
+                    readOrder.GetDecimal(3),
+                    readOrder.GetString(4),
+                    readOrder.GetInt32(5)));
             }
             await sqlConnection.CloseAsync();
 
@@ -187,7 +171,7 @@ namespace PlainOldStoreApp.DataStorage
             }
 
             await sqlConnection.CloseAsync();
-
+            
             return new Tuple<List<Order>, string>(orderItems, orderSummery);
         }
 

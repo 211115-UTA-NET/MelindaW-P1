@@ -23,46 +23,34 @@ namespace PlainOldStoreApp.Ui
         {
             OrderList orderList = new OrderList();
             orderList = new() { Orders = ordersMade };
-            //foreach (var order in ordersMade)
-            //{
-            //    Order addQuery = new()
-            //    {
-            //        CustomerId = order.CustomerId,
-            //        StoreLocation = order.StoreLocation,
-            //        ProductId = order.ProductId,
-            //        ProductPrice = order.ProductPrice,
-            //        ProductQuantiy = order.ProductQuantiy
-            //    };
-                
-            //}
 
-                HttpRequestMessage orderRequest = new(HttpMethod.Post, "/api/Order/order");
+            HttpRequestMessage orderRequest = new(HttpMethod.Post, "/api/Order/order");
 
-                orderRequest.Content = new StringContent(JsonSerializer.Serialize(orderList), Encoding.UTF8, MediaTypeNames.Application.Json);
+            orderRequest.Content = new StringContent(JsonSerializer.Serialize(orderList), Encoding.UTF8, MediaTypeNames.Application.Json);
 
-                HttpResponseMessage orderResponse;
-                try
-                {
-                    orderResponse = await _httpClient.SendAsync(orderRequest);
-                }
-                catch (ServerException ex)
-                {
-                    throw new ServerException("network error", ex);
-                }
+            HttpResponseMessage orderResponse;
+            try
+            {
+                orderResponse = await _httpClient.SendAsync(orderRequest);
+            }
+            catch (ServerException ex)
+            {
+                throw new ServerException("network error", ex);
+            }
 
-                if (orderResponse.Content.Headers.ContentType?.MediaType != MediaTypeNames.Application.Json)
-                {
-                    throw new ServerException();
-                }
+            if (orderResponse.Content.Headers.ContentType?.MediaType != MediaTypeNames.Application.Json)
+            {
+                throw new ServerException();
+            }
 
-                Tuple<List<Order>, string> summery = await orderResponse.Content.ReadFromJsonAsync<Tuple<List<Order>, string>>();
+            Tuple<List<Order>, string> summery = await orderResponse.Content.ReadFromJsonAsync<Tuple<List<Order>, string>>();
 
-                if (summery == null)
-                {
-                    throw new ServerException();
-                }
+            if (summery == null)
+            {
+                throw new ServerException();
+            }
             
-            //return summery;
+            return summery;
 
             throw new NotImplementedException();
         }

@@ -316,7 +316,7 @@ namespace PlainOldStoreApp.Ui
                 List<Order> ordersMade = new List<Order>();
                 foreach (Product product in amountOfProductsOrdered)
                 {
-                    ordersMade.Add(new(customerId, storeLocation, product.ProductId, product.ProductPrice, product.ProductQuantiy));
+                    ordersMade.Add(new(customerId, storeLocation, product.ProductId, product.ProductPrice, product.ProductName, product.ProductQuantiy));
                 }
                 Tuple<List<Order>, string> getOrders;
                 try
@@ -328,17 +328,17 @@ namespace PlainOldStoreApp.Ui
                     Console.WriteLine("Unable to connect to server");
                     break;
                 }
-                //Console.WriteLine("The order has been submitted.");
-                //Console.WriteLine("Order Summery:");
-                //Console.WriteLine();
-                //foreach (Order order in getOrders.Item1)
-                //{
-                //    Console.WriteLine(string.Format("{0,-39} | {1,-30} | {2:C2}", order.ProductName, order.Quantity, order.ProductPrice));
-                //}
-                //Console.WriteLine(getOrders.Item2);
-                //Console.WriteLine();
-                //Console.WriteLine("Thanks for placing an order.");
-                //Console.WriteLine();
+                Console.WriteLine("The order has been submitted.");
+                Console.WriteLine("Order Summery:");
+                Console.WriteLine();
+                foreach (Order order in getOrders.Item1)
+                {
+                    Console.WriteLine(string.Format("{0,-39} | {1,-30} | {2:C2}", order.ProductName, order.ProductQuantiy, order.ProductPrice));
+                }
+                Console.WriteLine(getOrders.Item2);
+                Console.WriteLine();
+                Console.WriteLine("Thanks for placing an order.");
+                Console.WriteLine();
                 break;
             }
         }

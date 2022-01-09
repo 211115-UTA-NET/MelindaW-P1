@@ -14,6 +14,8 @@ namespace PlainOldStoreApi.Api.Dtos
         [Required]
         public decimal ProductPrice { get; set; }
         [Required]
+        public string ProductName { get; set; }
+        [Required]
         public int? ProductQuantiy { get; set; }
     }
 }
