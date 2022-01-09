@@ -36,7 +36,7 @@ namespace PlainOldStoreApp.Ui
                     break;
                 case "3":
                 case "lookup order":
-                    //PlaneOldShop.LookupOrder();
+                    await PlainOldShop.LookupOrder(server);
                     break;
                 case "4":
                 case "exit":

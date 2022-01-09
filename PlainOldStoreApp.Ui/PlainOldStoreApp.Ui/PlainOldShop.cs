@@ -594,106 +594,106 @@ namespace PlainOldStoreApp.Ui
                 break;
         }
     }
-        //internal static void LookupOrder(string connectionString)
-        //{
-        //    Console.WriteLine("Would you like to lookup all orders of a customer or store?");
-        //    Console.WriteLine("1. Customer");
-        //    Console.WriteLine("2. Store");
-        //    string? selection = Console.ReadLine();
-        //    IOrderRepository orderRepository = new SqlOrderRepository(connectionString);
-        //    switch (selection)
-        //    {
-        //        case "1":
-        //            Console.WriteLine("Please enter first name and last name.");
-        //            string? name = Console.ReadLine();
-        //            Console.WriteLine();
-        //            Tuple<string, string> fullname = ValidateInput.VaildateName(name);
-        //            string? tryAgain;
-        //            bool isValidateingName = true;
-        //            while (isValidateingName)
-        //            {
-        //                if (string.IsNullOrWhiteSpace(fullname.Item1) || string.IsNullOrWhiteSpace(fullname.Item2))
-        //                {
-        //                    Console.WriteLine("You did not enter you fist and last name.");
-        //                    Console.WriteLine("Would you like to try again?");
-        //                    Console.WriteLine("Yes(Y) or No(N)?");
-        //                    tryAgain = Console.ReadLine()?.Trim();
-        //                    Console.WriteLine();
-        //                    if (tryAgain == "yes" || tryAgain == "y")
-        //                    {
-        //                        Console.WriteLine("Please enter your first name and last name.");
-        //                        name = Console.ReadLine()?.Trim();
-        //                        Console.WriteLine();
-        //                        fullname = ValidateInput.VaildateName(name);
-        //                    }
-        //                    else
-        //                    {
-        //                        break;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    isValidateingName = false;
-        //                }
-        //            }
-        //            string firstName = fullname.Item1.ToUpper();
-        //            string lastName = fullname.Item2.ToUpper();
+        internal async static Task LookupOrder(Uri server)
+        {
+            IOrderService orderService = new OrderService(server);
+            Console.WriteLine("Would you like to lookup all orders of a customer or store?");
+            Console.WriteLine("1. Customer");
+            Console.WriteLine("2. Store");
+            string? selection = Console.ReadLine();
 
-        //            Order allCutomerOrders = new Order(orderRepository);
-        //            List<Order> orders = allCutomerOrders.GetAllCustomerOrders(firstName, lastName);
-        //            if (orders.Count == 0)
-        //            {
-        //                Console.WriteLine("No orders have been made by this customer.");
-        //            }
-        //            else
-        //            {
-        //                foreach (Order order in orders)
-        //                {
-        //                    Console.WriteLine(order.ProductName + " " + order.ProductPrice + " " + order.Quantity + " " + order.DateTime);
-        //                }
-        //            }
-        //            break;
-        //        case "2":
-        //            IStoreRepository storeRepository = new SqlStoreRepository(connectionString);
-        //            Store store = new Store(storeRepository);
-        //            Dictionary<int, string> stores = store.GetStoresFromDatabase();
-        //            Console.WriteLine("Please choose a store location.");
-        //            foreach (var s in stores)
-        //            {
-        //                Console.WriteLine(s);
-        //            }
-        //            int numberOfStores = stores.Count;
-        //            int storeLocation = 0;
-        //            bool isInt = false;
-        //            while (!isInt)
-        //            {
-        //                isInt = int.TryParse(Console.ReadLine(), out storeLocation);
-        //                if (isInt == false || numberOfStores < 0 || storeLocation > numberOfStores)
-        //                {
-        //                    Console.WriteLine("Invalid input.");
-        //                    Console.WriteLine("Please choose a store location.");
-        //                    Console.WriteLine();
-        //                    isInt = false;
-        //                }
-        //            }
-        //            Order allStoreOrders = new Order(orderRepository);
-        //            List<Order> ordersFromStore = allStoreOrders.GetAllStoreOrders(storeLocation);
-        //            if (ordersFromStore.Count == 0)
-        //            {
-        //                Console.WriteLine("No orders have been made at this store.");
-        //            }
-        //            else
-        //            {
-        //                foreach (Order order in ordersFromStore)
-        //                {
-        //                    Console.WriteLine(order.ProductName + " " + order.ProductPrice + " " + order.Quantity + " " + order.DateTime);
-        //                }
-        //            }
-        //            break;
-        //        default:
-        //            Console.WriteLine("You did not make a valid selection");
-        //            break;
-        //    }
-        //}
+            switch (selection)
+            {
+                case "1":
+                    Console.WriteLine("Please enter first name and last name.");
+                    string? name = Console.ReadLine();
+                    Console.WriteLine();
+                    Tuple<string, string> fullname = ValidateInput.VaildateName(name);
+                    string? tryAgain;
+                    bool isValidateingName = true;
+                    while (isValidateingName)
+                    {
+                        if (string.IsNullOrWhiteSpace(fullname.Item1) || string.IsNullOrWhiteSpace(fullname.Item2))
+                        {
+                            Console.WriteLine("You did not enter you fist and last name.");
+                            Console.WriteLine("Would you like to try again?");
+                            Console.WriteLine("Yes(Y) or No(N)?");
+                            tryAgain = Console.ReadLine()?.Trim();
+                            Console.WriteLine();
+                            if (tryAgain == "yes" || tryAgain == "y")
+                            {
+                                Console.WriteLine("Please enter your first name and last name.");
+                                name = Console.ReadLine()?.Trim();
+                                Console.WriteLine();
+                                fullname = ValidateInput.VaildateName(name);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            isValidateingName = false;
+                        }
+                    }
+                    string firstName = fullname.Item1.ToUpper();
+                    string lastName = fullname.Item2.ToUpper();
+
+                    List<Order> orders = await orderService.GetAllOrdersByName(firstName, lastName);
+                    if (orders.Count == 0)
+                    {
+                        Console.WriteLine("No orders have been made by this customer.");
+                    }
+                    else
+                    {
+                        foreach (Order order in orders)
+                        {
+                            Console.WriteLine(order.ProductName + " " + order.ProductPrice + " " + order.ProductQuantiy + " " + order.DateTime);
+                        }
+                    }
+                    break;
+                //case "2":
+                //    IStoreRepository storeRepository = new SqlStoreRepository(connectionString);
+                //    Store store = new Store(storeRepository);
+                //    Dictionary<int, string> stores = store.GetStoresFromDatabase();
+                //    Console.WriteLine("Please choose a store location.");
+                //    foreach (var s in stores)
+                //    {
+                //        Console.WriteLine(s);
+                //    }
+                //    int numberOfStores = stores.Count;
+                //    int storeLocation = 0;
+                //    bool isInt = false;
+                //    while (!isInt)
+                //    {
+                //        isInt = int.TryParse(Console.ReadLine(), out storeLocation);
+                //        if (isInt == false || numberOfStores < 0 || storeLocation > numberOfStores)
+                //        {
+                //            Console.WriteLine("Invalid input.");
+                //            Console.WriteLine("Please choose a store location.");
+                //            Console.WriteLine();
+                //            isInt = false;
+                //        }
+                //    }
+                //    Order allStoreOrders = new Order(orderRepository);
+                //    List<Order> ordersFromStore = allStoreOrders.GetAllStoreOrders(storeLocation);
+                //    if (ordersFromStore.Count == 0)
+                //    {
+                //        Console.WriteLine("No orders have been made at this store.");
+                //    }
+                //    else
+                //    {
+                //        foreach (Order order in ordersFromStore)
+                //        {
+                //            Console.WriteLine(order.ProductName + " " + order.ProductPrice + " " + order.Quantity + " " + order.DateTime);
+                //        }
+                //    }
+                    break;
+                default:
+                    Console.WriteLine("You did not make a valid selection");
+                    break;
+            }
+        }
     }
 }

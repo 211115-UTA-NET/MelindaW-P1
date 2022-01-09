@@ -14,6 +14,7 @@ namespace PlainOldStoreApp.Ui.Dtos
         public decimal ProductPrice { get; set; }
         public string ProductName { get; set; }
         public int? ProductQuantiy { get; set; }
+        public DateTime DateTime { get; set; }
         public Order() { }
 
         public Order(string productName, int productQuantity, decimal productPrice)

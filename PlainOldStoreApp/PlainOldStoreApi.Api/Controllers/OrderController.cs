@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PlainOldStoreApi.Api.Dtos;
 using PlainOldStoreApp.DataStorage;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlainOldStoreApi.Api.Controllers
 {
@@ -17,9 +18,16 @@ namespace PlainOldStoreApi.Api.Controllers
             _ordersInvoiceID = Guid.NewGuid();
         }
 
-        // GET by id
+        // GET by Store id
 
         // GET by firstName lastName
+        [HttpGet("firstName&lastName")]
+        public async Task<ActionResult<List<Order>>> GetCustomerOrder([FromQuery, Required] string firstName, [FromQuery, Required] string lastName)
+        {
+            List<Order> customerOrders = await _orderRepository.GetAllCoustomerOrders(firstName, lastName);
+
+            return customerOrders;
+        }
 
         // POST all customer orders
         [HttpPost("order")]
@@ -35,8 +43,6 @@ namespace PlainOldStoreApi.Api.Controllers
                 storeId = order.StoreLocation;
                 ordersList.Add(new(order.ProductId, order.ProductPrice, order.ProductQuantiy));
             }
-            
-            
             
             Tuple<List<Order>, string> postAllOrders = await _orderRepository.AddAllOrders(customerId, _ordersInvoiceID, storeId, ordersList);
 

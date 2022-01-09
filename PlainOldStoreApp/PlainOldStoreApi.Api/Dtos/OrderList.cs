@@ -2,6 +2,6 @@
 {
     public class OrderList
     {
-        public List<AddOrder> Orders { get; set; }
+        public List<OrderDts> Orders { get; set; }
     }
 }

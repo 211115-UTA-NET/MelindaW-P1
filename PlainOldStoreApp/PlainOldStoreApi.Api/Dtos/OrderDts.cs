@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PlainOldStoreApi.Api.Dtos
 {
-    public class AddOrder
+    public class OrderDts
     {
         [Required]
         public Guid CustomerId { get; set; }
@@ -17,5 +17,6 @@ namespace PlainOldStoreApi.Api.Dtos
         public string ProductName { get; set; }
         [Required]
         public int? ProductQuantiy { get; set; }
+        public DateTime DateTime { get; set; }
     }
 }

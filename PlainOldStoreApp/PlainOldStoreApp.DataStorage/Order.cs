@@ -39,7 +39,7 @@
             ProductQuantiy = quantity;
             DateTime = orderdate;
         }
-        public Order(Guid cutomerId, int storeId, int productId, decimal productPrice, string productName, int productQuantiy)
+        public Order(Guid cutomerId, int storeId, int productId, decimal productPrice, string productName, int productQuantiy, DateTime dateTime)
         {
             CustomerId = cutomerId;
             StoreLocation = storeId;
@@ -47,6 +47,7 @@
             ProductPrice= productPrice;
             ProductName = productName;
             ProductQuantiy = productQuantiy;
+            DateTime = dateTime;
         }
         public Tuple<List<Order>, string> PlaceCustomerOreder(Guid customerId, int storeId, List<Order> orders)
         {

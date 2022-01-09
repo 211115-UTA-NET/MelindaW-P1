@@ -123,7 +123,7 @@ namespace PlainOldStoreApp.DataStorage
             List<Order> orderItems = new List<Order>();
 
             string sqlGetOrderString =
-                @"SELECT CustomerID, Posa.OrdersInvoice.StoreID, Posa.Products.ProductID, Posa.CustomerOrders.ProductPrice, ProductName, Quantity
+                @"SELECT CustomerID, Posa.OrdersInvoice.StoreID, Posa.Products.ProductID, Posa.CustomerOrders.ProductPrice, ProductName, Quantity, Posa.OrdersInvoice.OrderTime
                     FROM Posa.CustomerOrders
                     INNER JOIN Posa.Products ON Posa.CustomerOrders.ProductID=Posa.Products.ProductID
                     INNER JOIN Posa.OrdersInvoice ON Posa.CustomerOrders.OrdersInvoiceID=Posa.OrdersInvoice.OrdersInvoiceID
@@ -145,7 +145,8 @@ namespace PlainOldStoreApp.DataStorage
                     readOrder.GetInt32(2),
                     readOrder.GetDecimal(3),
                     readOrder.GetString(4),
-                    readOrder.GetInt32(5)));
+                    readOrder.GetInt32(5),
+                    readOrder.GetDateTime(6)));
             }
             await sqlConnection.CloseAsync();
 
@@ -180,7 +181,7 @@ namespace PlainOldStoreApp.DataStorage
             List<Order> allCustomerOrders = new List<Order>();
 
             string sqlGetAllCustomerOrdersString =
-                @"SELECT FirstName, LastName, ProductName, Posa.CustomerOrders.ProductPrice, Quantity, Posa.OrdersInvoice.OrderTime
+                @"SELECT FirstName, LastName, Posa.Customer.CustomerID, Posa.OrdersInvoice.StoreID, Posa.CustomerOrders.ProductID, Posa.CustomerOrders.ProductPrice, ProductName, Quantity, Posa.OrdersInvoice.OrderTime
                     FROM Posa.Customer
                     INNER JOIN Posa.OrdersInvoice ON Posa.Customer.CustomerID=Posa.OrdersInvoice.CustomerID
                     INNER JOIN Posa.CustomerOrders ON Posa.OrdersInvoice.OrdersInvoiceID=Posa.OrdersInvoice.OrdersInvoiceID
@@ -198,10 +199,13 @@ namespace PlainOldStoreApp.DataStorage
             while (await dataReader.ReadAsync())
             {
                 allCustomerOrders.Add(new(
-                    dataReader.GetString(2),
-                    dataReader.GetDecimal(3),
+                    dataReader.GetGuid(2),
+                    dataReader.GetInt32(3),
                     dataReader.GetInt32(4),
-                    dataReader.GetDateTime(5)));
+                    dataReader.GetDecimal(5),
+                    dataReader.GetString(6),
+                    dataReader.GetInt32(7),
+                    dataReader.GetDateTime(8)));
             }
             await sqlConnection.CloseAsync();
             return allCustomerOrders;
