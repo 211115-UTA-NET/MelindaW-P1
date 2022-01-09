@@ -216,7 +216,7 @@ namespace PlainOldStoreApp.DataStorage
             List<Order> allStoreOrders = new List<Order>();
 
             string sqlGetAllStoreOrdersString =
-                @"SELECT Posa.OrdersInvoice.StoreID, ProductName, Posa.CustomerOrders.ProductPrice, Quantity, Posa.OrdersInvoice.OrderTime, Posa.CustomerOrders.OrderLineID
+                @"SELECT CustomerID, Posa.OrdersInvoice.StoreID, Posa.CustomerOrders.ProductID, Posa.CustomerOrders.ProductPrice, ProductName, Quantity, Posa.OrdersInvoice.OrderTime
                     FROM Posa.OrdersInvoice
                     INNER JOIN Posa.CustomerOrders ON Posa.OrdersInvoice.OrdersInvoiceID=Posa.OrdersInvoice.OrdersInvoiceID
                     INNER JOIN Posa.Products ON Posa.CustomerOrders.ProductID=Posa.Products.ProductID
@@ -231,10 +231,13 @@ namespace PlainOldStoreApp.DataStorage
             while (await dataReader.ReadAsync())
             {
                 allStoreOrders.Add(new(
-                    dataReader.GetString(1),
-                    dataReader.GetDecimal(2),
-                    dataReader.GetInt32(3),
-                    dataReader.GetDateTime(4)));
+                    dataReader.GetGuid(0),
+                    dataReader.GetInt32(2),
+                    dataReader.GetInt32(2),
+                    dataReader.GetDecimal(3),
+                    dataReader.GetString(4),
+                    dataReader.GetInt32(5),
+                    dataReader.GetDateTime(6)));
             }
             await sqlConnection.CloseAsync();
             return allStoreOrders;

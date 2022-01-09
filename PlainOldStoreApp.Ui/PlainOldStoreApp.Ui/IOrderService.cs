@@ -12,5 +12,7 @@ namespace PlainOldStoreApp.Ui
         Task<Tuple<List<Order>, string>> PostAllOrders(List<Order> ordersMade);
 
         Task<List<Order>> GetAllOrdersByName(string firstName, string lastName);
+
+        Task<List<Order>> GetAllOrdersByStoreId(int storeId);
     }
 }

@@ -64,6 +64,47 @@ namespace PlainOldStoreApp.Ui
             throw new NotImplementedException();
         }
 
+        public async Task<List<Order>> GetAllOrdersByStoreId(int storeId)
+        {
+            Dictionary<string, string> orderQuery = new()
+            {
+                ["StoreId"] = storeId.ToString()
+            };
+
+            string requestUri = QueryHelpers.AddQueryString("/api/order/storeId", orderQuery);
+
+            HttpRequestMessage orderRequest = new(HttpMethod.Get, requestUri);
+
+            orderRequest.Headers.Accept.Add(new(MediaTypeNames.Application.Json));
+
+            HttpResponseMessage orderResponse;
+
+            try
+            {
+                orderResponse = await _httpClient.SendAsync(orderRequest);
+            }
+            catch (ServerException ex)
+            {
+                throw new ServerException("network error", ex);
+            }
+
+            orderResponse.EnsureSuccessStatusCode();
+
+            if (orderResponse.Content.Headers.ContentType?.MediaType != MediaTypeNames.Application.Json)
+            {
+                throw new ServerException();
+            }
+
+            List<Order>? orders = await orderResponse.Content.ReadFromJsonAsync<List<Order>>();
+
+            if (orders == null)
+            {
+                throw new ServerException();
+            }
+
+            return orders;
+        }
+
         public async Task<Tuple<List<Order>, string>> PostAllOrders(List<Order> ordersMade)
         {
             OrderList orderList = new() { Orders = ordersMade };

@@ -19,6 +19,13 @@ namespace PlainOldStoreApi.Api.Controllers
         }
 
         // GET by Store id
+        [HttpGet("storeId")]
+        public async Task<ActionResult<List<Order>>> GetStoreOrdersByStoreId([FromQuery, Required]int storeId)
+        {
+            List<Order> storeOrders = await _orderRepository.GetAllStoreOrders(storeId);
+
+            return storeOrders;
+        }
 
         // GET by firstName lastName
         [HttpGet("firstName&lastName")]
@@ -35,7 +42,7 @@ namespace PlainOldStoreApi.Api.Controllers
         {
             var orders = newOrder.Orders;
             Guid customerId = Guid.Empty;
-            int storeId =0;
+            int storeId = 0;
             List<Order> ordersList = new List<Order>();
             foreach (var order in orders)
             {

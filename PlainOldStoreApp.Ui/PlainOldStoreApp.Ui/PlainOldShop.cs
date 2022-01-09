@@ -596,6 +596,7 @@ namespace PlainOldStoreApp.Ui
     }
         internal async static Task LookupOrder(Uri server)
         {
+            IStoreService storeService = new StoreService(server);
             IOrderService orderService = new OrderService(server);
             Console.WriteLine("Would you like to lookup all orders of a customer or store?");
             Console.WriteLine("1. Customer");
@@ -653,42 +654,39 @@ namespace PlainOldStoreApp.Ui
                         }
                     }
                     break;
-                //case "2":
-                //    IStoreRepository storeRepository = new SqlStoreRepository(connectionString);
-                //    Store store = new Store(storeRepository);
-                //    Dictionary<int, string> stores = store.GetStoresFromDatabase();
-                //    Console.WriteLine("Please choose a store location.");
-                //    foreach (var s in stores)
-                //    {
-                //        Console.WriteLine(s);
-                //    }
-                //    int numberOfStores = stores.Count;
-                //    int storeLocation = 0;
-                //    bool isInt = false;
-                //    while (!isInt)
-                //    {
-                //        isInt = int.TryParse(Console.ReadLine(), out storeLocation);
-                //        if (isInt == false || numberOfStores < 0 || storeLocation > numberOfStores)
-                //        {
-                //            Console.WriteLine("Invalid input.");
-                //            Console.WriteLine("Please choose a store location.");
-                //            Console.WriteLine();
-                //            isInt = false;
-                //        }
-                //    }
-                //    Order allStoreOrders = new Order(orderRepository);
-                //    List<Order> ordersFromStore = allStoreOrders.GetAllStoreOrders(storeLocation);
-                //    if (ordersFromStore.Count == 0)
-                //    {
-                //        Console.WriteLine("No orders have been made at this store.");
-                //    }
-                //    else
-                //    {
-                //        foreach (Order order in ordersFromStore)
-                //        {
-                //            Console.WriteLine(order.ProductName + " " + order.ProductPrice + " " + order.Quantity + " " + order.DateTime);
-                //        }
-                //    }
+                case "2":
+                    Dictionary<int, string> stores = await storeService.GetStoreListAsync();
+                    Console.WriteLine("Please choose a store location.");
+                    foreach (var s in stores)
+                    {
+                        Console.WriteLine(s);
+                    }
+                    int numberOfStores = stores.Count;
+                    int storeLocation = 0;
+                    bool isInt = false;
+                    while (!isInt)
+                    {
+                        isInt = int.TryParse(Console.ReadLine(), out storeLocation);
+                        if (isInt == false || numberOfStores < 0 || storeLocation > numberOfStores)
+                        {
+                            Console.WriteLine("Invalid input.");
+                            Console.WriteLine("Please choose a store location.");
+                            Console.WriteLine();
+                            isInt = false;
+                        }
+                    }
+                    List<Order> ordersFromStore = await orderService.GetAllOrdersByStoreId(storeLocation);
+                    if (ordersFromStore.Count == 0)
+                    {
+                        Console.WriteLine("No orders have been made at this store.");
+                    }
+                    else
+                    {
+                        foreach (Order order in ordersFromStore)
+                        {
+                            Console.WriteLine(order.ProductName + " " + order.ProductPrice + " " + order.StoreLocation + " " + order.DateTime);
+                        }
+                    }
                     break;
                 default:
                     Console.WriteLine("You did not make a valid selection");
