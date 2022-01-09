@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Data.SqlClient;
 using PlainOldStoreApp.DataStorage;
 
-string connectionString = await File.ReadAllTextAsync("C:/Users/melin/OneDrive/Desktop/RevGit/MelindaW-P0/waggonerm-posa-db.txt");
+//string connectionString = await File.ReadAllTextAsync("C:/Users/melin/OneDrive/Desktop/RevGit/MelindaW-P0/waggonerm-posa-db.txt");
 
 var builder = WebApplication.CreateBuilder(args);
+
+var conStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("PosaDBConnectionString"));
+conStrBuilder.Password = builder.Configuration["DbPassword"];
+var connectionString = conStrBuilder.ConnectionString;
 
 // Add services to the container.
 builder.Services.AddControllers(options =>
