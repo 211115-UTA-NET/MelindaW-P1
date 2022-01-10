@@ -15,7 +15,7 @@ jobs:
     
     - name: Build image
       run: |
-        cd MelindaW-P1/PlainOldStoreApp.Ui/PlainOldStoreApp.Ui/
+        cd PlainOldStoreApp.Ui/PlainOldStoreApp.Ui/
         docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/posaui
         
     - name: Push to DuckerHub
