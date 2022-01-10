@@ -54,5 +54,6 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"211115-UTA-NET_MelindaW-P1" /o:"211115-uta-net" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build ./PlainOldStoreApp/PlainOldStoreApp.Ui.sln
           dotnet build ./PlainOldStoreApp/PlainOldStoreApp.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d: sonar.login="${{ secrets.SONAR_TOKEN }}"
