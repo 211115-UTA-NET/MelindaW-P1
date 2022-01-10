@@ -24,6 +24,4 @@ jobs:
       run: |
         cd PlainOldStoreApp.Ui/
         docker build . --file Dockerfile --tag posaconsoleapp
-        
-    - name: Push to DockerHub
-      run: docker push posaconsoleapp
+        docker push posaconsoleapp
