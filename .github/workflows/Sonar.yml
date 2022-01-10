@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   build:
-    name: Build
+    name: Build for Sonar
     runs-on: windows-latest
     steps:
     
