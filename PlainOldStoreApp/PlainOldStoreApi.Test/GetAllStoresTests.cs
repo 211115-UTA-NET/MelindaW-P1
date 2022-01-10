@@ -1,13 +1,12 @@
 using Moq;
 using PlainOldStoreApi.Api.Controllers;
 using PlainOldStoreApp.DataStorage;
-using System;
 using System.Collections.Generic;
 using Xunit;
 
 namespace PlainOldStoreApi.Test
 {
-    public class GetAllOrdersTests
+    public class GetAllStoresTests
     {
         [Fact]
         public void GetAllStoresTest()
@@ -16,8 +15,8 @@ namespace PlainOldStoreApi.Test
             Dictionary<int, string> stores = new()
             {
                 { 1, "Mountain View" },
-                { 2, "San Jose"},
-                { 3, "Edmond"}
+                { 2, "San Jose" },
+                { 3, "Edmond" }
             };
             var mock = new Mock<IStoreRepository>();
             mock.Setup(x => x.RetriveStores()).ReturnsAsync(stores);
