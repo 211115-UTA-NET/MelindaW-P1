@@ -6,8 +6,8 @@ namespace PlainOldStoreApp.Ui
     {
         static async Task Main(String[] args)
         {
-            Uri server = new Uri("https://localhost:7129");
-
+            //Uri server = new Uri("https://localhost:7129");
+            Uri server = new("https://plainoldstoreappapi.azurewebsites.net");
             bool isRunning = true;
             Console.WriteLine("Welcome to Plain Old Store!");
             Console.WriteLine("What can I help you with today?");

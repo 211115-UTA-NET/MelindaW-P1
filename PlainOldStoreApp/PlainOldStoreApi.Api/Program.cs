@@ -6,9 +6,7 @@ using PlainOldStoreApp.DataStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var conStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("PosaDBConnectionString"));
-conStrBuilder.Password = builder.Configuration["DbPassword"];
-var connectionString = conStrBuilder.ConnectionString;
+string connectionString = builder.Configuration.GetConnectionString("PosaDBConnectionString");
 
 // Add services to the container.
 builder.Services.AddControllers(options =>
