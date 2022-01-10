@@ -15,8 +15,8 @@ jobs:
     
     - name: Build image
       run: |
-        cd PlainOldStoreApp.Ui/
-        docker build --file dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/posaui .
+        cd PlainOldStoreApp.Ui/PlainOldStoreApp.Ui/
+        docker build --file dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/posaui
         
     - name: Push to DuckerHub
       run: |
