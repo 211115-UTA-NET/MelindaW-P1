@@ -40,12 +40,12 @@ jobs:
         shell: powershell
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner --version 5.4.0
           
-      - name: Setup .NET 5
-        uses: action/setup-dotnet@v1
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: 6.0.x
           
       - name: Build and analyze
         env:
@@ -55,26 +55,4 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"211115-UTA-NET_MelindaW-P1" /o:"211115-uta-net" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build ./PlainOldStoreApp/PlainOldStoreApp.sln
-          
-      - name: Setup .NET 6
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
-          
-      - name: BUild
-        shell: powershell
-        run: |
-          dotnet buid
-      
-      - name: Switch to .NET 5
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-verson: 5.0.x
-      
-      - name: end analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
-        run: |
           .\.sonar\scanner\dotnet-sonarscanner end /d: sonar.login="${{ secrets.SONAR_TOKEN }}"
