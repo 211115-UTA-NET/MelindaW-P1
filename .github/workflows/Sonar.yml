@@ -1,16 +1,12 @@
-name: Sonar Analysis
-
+name: Build
 on:
   push:
     branches:
-      - main
-    
+      - master
 jobs:
-
   build:
     name: Build
     runs-on: windows-latest
-    
     steps:
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -19,14 +15,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-          
       - name: Cache SonarCloud scanner
         id: cache-sonar-scanner
         uses: actions/cache@v1
@@ -34,13 +28,12 @@ jobs:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-          
       - name: Install SonarCloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner --version 5.4.0
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
           
       - name: Setup .NET 6
         uses: actions/setup-dotnet@v1
@@ -56,4 +49,4 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"211115-UTA-NET_MelindaW-P1" /o:"211115-uta-net" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build ./PlainOldStoreApp/PlainOldStoreApp.Ui.sln
           dotnet build ./PlainOldStoreApp/PlainOldStoreApp.sln
-          .\.sonar\scanner\dotnet-sonarscanner end /d: sonar.login="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
