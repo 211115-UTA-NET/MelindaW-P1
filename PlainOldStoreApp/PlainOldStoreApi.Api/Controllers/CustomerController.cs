@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using PlainOldStoreApi.Api.Dots;
 using PlainOldStoreApp.DataStorage;
 using System.ComponentModel.DataAnnotations;
 
 namespace PlainOldStoreApi.Api.Controllers
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase
@@ -41,7 +39,7 @@ namespace PlainOldStoreApi.Api.Controllers
 
         // GET: Get by firstName, lastName
         [HttpGet("firstName&lastName")]
-        public async Task<ActionResult<List<Customer>>> GetAll([FromQuery, Required]string firstName, [FromQuery, Required] string lastName)
+        public async Task<ActionResult<List<Customer>>> GetAll([FromQuery, Required] string firstName, [FromQuery, Required] string lastName)
         {
             List<Customer> customers = await _customerRepository.GetAllCustomer(firstName, lastName);
             return customers;
