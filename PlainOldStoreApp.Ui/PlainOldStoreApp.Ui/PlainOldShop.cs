@@ -12,6 +12,9 @@ namespace PlainOldStoreApp.Ui
             IStoreService storeService = new StoreService(server);
             IProductService productService = new ProductService(server);
             IOrderService orderService = new OrderService(server);
+            CustomerHandler customerHandler = new CustomerHandler(customerService);
+            ProductsList productsList = new ProductsList(productService);
+            StoreList storeList = new StoreList(storeService);
             bool isOrdering = true;
             while (isOrdering)
             {
@@ -52,7 +55,6 @@ namespace PlainOldStoreApp.Ui
                 {
                     break;
                 }
-                CustomerHandler customerHandler = new CustomerHandler(customerService);
                 if (nameOrEmailTuple.Item1 == "email")
                 {
                     bool foundEmail;
@@ -85,7 +87,7 @@ namespace PlainOldStoreApp.Ui
                     List<Customer> foundCustomers;
                     try
                     {
-                        foundCustomers = await customerService.GetAllCustomersByFullName(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2);
+                        foundCustomers = await customerHandler.GetCustomerByName(nameOrEmailTuple.Item1, nameOrEmailTuple.Item2);
                     }
                     catch(ServerException)
                     {
@@ -159,14 +161,14 @@ namespace PlainOldStoreApp.Ui
                 Guid customerId;
                 try
                 {
-                    customerId = await customerService.GetCustomerId(email);
+                    customerId = await customerHandler.GetCustomerIdByEmail(email);
                 }
                 catch (ServerException)
                 {
                     Console.WriteLine("Unable to connect to server");
                     break;
                 }
-                StoreList storeList = new StoreList(storeService);
+                
                 Dictionary<int, string> stores = await storeList.GetAllStores();
 
                 if(stores.ContainsKey(-1))
@@ -192,7 +194,6 @@ namespace PlainOldStoreApp.Ui
                         isInt = false;
                     }
                 }
-                ProductsList productsList = new ProductsList(productService);
                 List<Product> allStoreProducts;
                 try
                 {

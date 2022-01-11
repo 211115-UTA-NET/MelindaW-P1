@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlainOldStoreApp.Ui.Dots;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,18 @@ namespace PlainOldStoreApp.Ui
             bool foundEmail = await _customerService.GetIfEmailFound(email);
 
             return foundEmail;
+        }
+
+        public async Task<List<Customer>> GetCustomerByName(string firstName, string lastName)
+        {
+            List<Customer> foundCustomers = await _customerService.GetAllCustomersByFullName(firstName, lastName);
+            return foundCustomers;
+        }
+
+        public async Task<Guid> GetCustomerIdByEmail(string email)
+        {
+            Guid customerId = await _customerService.GetCustomerId(email);
+            return customerId;
         }
 
     }
