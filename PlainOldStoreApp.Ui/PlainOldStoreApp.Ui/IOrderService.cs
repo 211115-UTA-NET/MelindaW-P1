@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PlainOldStoreApp.Ui
 {
-    internal interface IOrderService
+    public interface IOrderService
     {
         Task<Tuple<List<Order>, string>> PostAllOrders(List<Order> ordersMade);
 

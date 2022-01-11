@@ -60,8 +60,6 @@ namespace PlainOldStoreApp.Ui
             }
 
             return orders;
-
-            throw new NotImplementedException();
         }
 
         public async Task<List<Order>> GetAllOrdersByStoreId(int storeId)

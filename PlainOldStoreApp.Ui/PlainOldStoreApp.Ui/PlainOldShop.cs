@@ -606,6 +606,7 @@ namespace PlainOldStoreApp.Ui
         {
             IStoreService storeService = new StoreService(server);
             IOrderService orderService = new OrderService(server);
+            OrderHandler orderHandler = new OrderHandler(orderService);
             Console.WriteLine("Would you like to lookup all orders of a customer or store?");
             Console.WriteLine("1. Customer");
             Console.WriteLine("2. Store");
@@ -649,7 +650,7 @@ namespace PlainOldStoreApp.Ui
                     string firstName = fullname.Item1.ToUpper();
                     string lastName = fullname.Item2.ToUpper();
 
-                    List<Order> orders = await orderService.GetAllOrdersByName(firstName, lastName);
+                    List<Order> orders = await orderHandler.GetAllOrdersByCustomerName(firstName, lastName);
                     if (orders.Count == 0)
                     {
                         Console.WriteLine("No orders have been made by this customer.");
