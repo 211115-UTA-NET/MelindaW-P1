@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlainOldStoreApp.Ui
 {
-    internal interface IStoreService
+    public interface IStoreService
     {
         Task<Dictionary<int, string>> GetStoreListAsync();
     }

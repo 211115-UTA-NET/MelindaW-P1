@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PlainOldStoreApp.Ui
 {
-    internal class StoreService : IStoreService
+    public class StoreService : IStoreService
     {
         private readonly HttpClient _httpClient = new();
 

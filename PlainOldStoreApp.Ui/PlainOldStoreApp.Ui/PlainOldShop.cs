@@ -48,6 +48,10 @@ namespace PlainOldStoreApp.Ui
                         isValidateingNameOrEmail = false;
                     }
                 }
+                if (nameOrEmailTuple.Item1 == "false")
+                {
+                    break;
+                }
                 if (nameOrEmailTuple.Item1 == "email")
                 {
                     bool foundEmail;
@@ -123,6 +127,10 @@ namespace PlainOldStoreApp.Ui
                                 isValidateingEmail = false;
                             }
                         }
+                        if (emailTuple.Item1 == "false")
+                        {
+                            break;
+                        }
                         foreach (Customer customer in foundCustomers)
                         {
                             if (customer.Email == emailTuple.Item2)
@@ -157,18 +165,14 @@ namespace PlainOldStoreApp.Ui
                     Console.WriteLine("Unable to connect to server");
                     break;
                 }
+                StoreList storeList = new StoreList(storeService);
+                Dictionary<int, string> stores = await storeList.GetAllStores();
 
-                Dictionary<int, string> stores;
-                try
+                if(stores.ContainsKey(-1))
                 {
-                    stores = await storeService.GetStoreListAsync();
-                }
-                catch(ServerException)
-                {
-                    Console.WriteLine("Unable to connect to server");
                     break;
                 }
-                Console.WriteLine("Please choose a store location.");
+
                 foreach (var s in stores)
                 {
                     Console.WriteLine(s);
@@ -342,6 +346,7 @@ namespace PlainOldStoreApp.Ui
                 break;
             }
         }
+
         internal async static Task AddCustomer(Uri server)
         {
             ICustomerService plainOldStoreService = new CustomerService(server);
