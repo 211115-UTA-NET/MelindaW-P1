@@ -2,12 +2,12 @@
 --DROP TABLE Posa.Stores;
 --DROP TABLE Posa.Products;
 --DROP TABLE Posa.Inventory;
---DROP TABLE Posa.CustomerOrders;
 --DROP TABLE Posa.OrdersInvoice;
+--DROP TABLE Posa.CustomerOrders;
 --DROP SCHEMA Posa;
 
-CREATE SCHEMA Posa;
-GO
+--CREATE SCHEMA Posa;
+--GO
 
 CREATE TABLE Posa.Customer
 (
@@ -43,12 +43,12 @@ CREATE TABLE Posa.Inventory
 	InventoryId INT IDENTITY(1,1) PRIMARY KEY,
 	StoreID INT FOREIGN KEY REFERENCES Posa.Stores(StoreID) NOT NULL,
 	ProductID INT FOREIGN KEY REFERENCES Posa.Products(ProductID) NOT NULL,
-	Quantity INT NOT NULL
+	Quantity INT CHECK (Quantity>=0) NOT NULL
 );
 
 CREATE TABLE Posa.OrdersInvoice
 (
-	OrdersInvoiceID INT IDENTITY(1,1) PRIMARY KEY,
+	OrdersInvoiceID UNIQUEIDENTIFIER PRIMARY KEY,
 	CustomerID UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Posa.Customer(CustomerID) NOT NULL,
 	StoreID INT NOT NULL,
 	OrderTime DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE Posa.OrdersInvoice
 CREATE TABLE Posa.CustomerOrders
 (
 	OrderLineID INT IDENTITY(1,1) PRIMARY KEY,
-	OrdersInvoiceID INT FOREIGN KEY REFERENCES Posa.OrdersiNvoice(OrdersInvoiceID) NOT NULL,
+	OrdersInvoiceID UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Posa.OrdersiNvoice(OrdersInvoiceID) NOT NULL,
 	ProductID INT FOREIGN KEY REFERENCES Posa.Products(ProductID) NOT NULL,
 	ProductPrice MONEY Not NULL,
 	Quantity INT NOT NULL
@@ -79,6 +79,14 @@ VALUES
 	('Plain Old Dress', 'Black Cotten T-Shirt Dress', 19.99),
 	('Plain Old Shoes', 'Black', 39.99),
 	('Plain Old Shoes', 'White', 39.99);
+
+INSERT INTO Posa.Stores
+(
+	StoreCity
+)
+VALUES
+	('Mountain View'),
+	('San Jose');
 
 INSERT INTO Posa.Inventory
 (
@@ -101,15 +109,6 @@ VALUES
 	(2, 5, 100),
 	(2, 6, 100),
 	(2, 7, 100);
-
-INSERT INTO Posa.Stores
-(
-	StoreCity
-)
-VALUES
-	('Mountin View'),
-	('San Jose');
-
 
 SELECT * FROM Posa.Customer;
 SELECT * FROM Posa.Stores;
