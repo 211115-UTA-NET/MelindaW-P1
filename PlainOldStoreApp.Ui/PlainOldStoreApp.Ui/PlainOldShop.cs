@@ -552,26 +552,26 @@ namespace PlainOldStoreApp.Ui
                     }
                 }
                 Console.WriteLine("Please enter address 1.");
-                string? address1 = Console.ReadLine();
+                string? address1 = Console.ReadLine().ToUpper();
                 Console.WriteLine();
                 Console.WriteLine("Please enter city.");
-                string? city = Console.ReadLine();
+                string? city = Console.ReadLine().ToUpper();
                 Console.WriteLine();
                 Console.WriteLine("Please enter state.");
-                string? state = Console.ReadLine();
+                string? state = Console.ReadLine().ToUpper();
                 Console.WriteLine();
                 Console.WriteLine("Please enter zip code.");
                 string? zip = Console.ReadLine();
                 Console.WriteLine();
 
-                string address = await ValidateInput.ValidateAddress(address1, city, state, zip);
-
+                //string address = await ValidateInput.ValidateAddress(address1, city, state, zip);
+                string address = $"{address1}\n{city}\n{state}\n{zip}\n";
                 if (string.IsNullOrWhiteSpace(address)) { break; }
 
                 address1 = address.Split("\n")[0];
                 city = address.Split("\n")[1];
                 state = address.Split("\n")[2];
-                zip = address.Split("\n")[3] + "-" + address.Split("\n")[4];
+                zip = address.Split("\n")[3]; // + "-" + address.Split("\n")[4];
 
                 Console.WriteLine("Please verify that the name, email, and address were entered correctly.");
                 Console.WriteLine();
