@@ -17,6 +17,7 @@ namespace PlainOldStoreApi.Api.Dots
         [Required]
         public string? ZipCode { get; set; }
         [Required]
+        [EmailAddress]
         public string? Email { get; set; }
     }
 }
