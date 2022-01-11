@@ -184,7 +184,7 @@ namespace PlainOldStoreApp.DataStorage
                 @"SELECT FirstName, LastName, Posa.Customer.CustomerID, Posa.OrdersInvoice.StoreID, Posa.CustomerOrders.ProductID, Posa.CustomerOrders.ProductPrice, ProductName, Quantity, Posa.OrdersInvoice.OrderTime
                     FROM Posa.Customer
                     INNER JOIN Posa.OrdersInvoice ON Posa.Customer.CustomerID=Posa.OrdersInvoice.CustomerID
-                    INNER JOIN Posa.CustomerOrders ON Posa.OrdersInvoice.OrdersInvoiceID=Posa.OrdersInvoice.OrdersInvoiceID
+                    INNER JOIN Posa.CustomerOrders ON Posa.OrdersInvoice.OrdersInvoiceID=Posa.CustomerOrders.OrdersInvoiceID
                     INNER JOIN Posa.Products ON Posa.CustomerOrders.ProductID=Posa.Products.ProductID
                     WHERE FirstName = @firstName
                     AND LastName = @lastName;";
@@ -218,7 +218,7 @@ namespace PlainOldStoreApp.DataStorage
             string sqlGetAllStoreOrdersString =
                 @"SELECT CustomerID, Posa.OrdersInvoice.StoreID, Posa.CustomerOrders.ProductID, Posa.CustomerOrders.ProductPrice, ProductName, Quantity, Posa.OrdersInvoice.OrderTime
                     FROM Posa.OrdersInvoice
-                    INNER JOIN Posa.CustomerOrders ON Posa.OrdersInvoice.OrdersInvoiceID=Posa.OrdersInvoice.OrdersInvoiceID
+                    INNER JOIN Posa.CustomerOrders ON Posa.OrdersInvoice.OrdersInvoiceID=Posa.CustomerOrders.OrdersInvoiceID
                     INNER JOIN Posa.Products ON Posa.CustomerOrders.ProductID=Posa.Products.ProductID
                     WHERE Posa.OrdersInvoice.StoreID=@storeID;";
 

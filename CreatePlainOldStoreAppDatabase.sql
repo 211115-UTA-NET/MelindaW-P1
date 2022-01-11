@@ -117,3 +117,4 @@ SELECT * FROM Posa.Inventory;
 SELECT * FROM Posa.Products;
 SELECT * FROM Posa.CustomerOrders;
 SELECT * FROM Posa.OrdersInvoice;
+
