@@ -192,10 +192,11 @@ namespace PlainOldStoreApp.Ui
                         isInt = false;
                     }
                 }
+                ProductsList productsList = new ProductsList(productService);
                 List<Product> allStoreProducts;
                 try
                 {
-                    allStoreProducts = await productService.GetAllStoreProductsById(storeLocation);
+                    allStoreProducts = await productsList.GetAllStoreProducts(storeLocation);
                 }
                 catch(ServerException)
                 {

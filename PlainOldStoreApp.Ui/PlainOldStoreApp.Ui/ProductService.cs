@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PlainOldStoreApp.Ui
 {
-    internal class ProductService : IProductService
+    public class ProductService : IProductService
     {
         private readonly HttpClient _httpClient = new();
         public ProductService(Uri serverUri)
