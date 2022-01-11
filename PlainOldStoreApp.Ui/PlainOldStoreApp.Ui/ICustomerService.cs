@@ -2,7 +2,7 @@
 
 namespace PlainOldStoreApp.Ui
 {
-    internal interface ICustomerService
+    public interface ICustomerService
     {
         Task<bool> GetIfEmailFound(string email);
         Task<List<Customer>> GetAllCustomersByFullName(string firstName, string lastName);

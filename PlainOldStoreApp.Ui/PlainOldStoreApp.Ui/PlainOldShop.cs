@@ -52,12 +52,13 @@ namespace PlainOldStoreApp.Ui
                 {
                     break;
                 }
+                CustomerHandler customerHandler = new CustomerHandler(customerService);
                 if (nameOrEmailTuple.Item1 == "email")
                 {
                     bool foundEmail;
                     try
                     {
-                        foundEmail = await customerService.GetIfEmailFound(nameOrEmailTuple.Item2);
+                        foundEmail = await customerHandler.IsEmailFound(nameOrEmailTuple.Item2);
                     }
                     catch (ServerException)
                     {
@@ -388,13 +389,13 @@ namespace PlainOldStoreApp.Ui
                         isValidateingNameOrEmail = false;
                     }
                 }
-
+                CustomerHandler customerHandler = new CustomerHandler(plainOldStoreService);
                 if (nameOrEmailTuple.Item1 == "email")
                 {
                     bool foundEmail;
                         try
                         {
-                            foundEmail = await plainOldStoreService.GetIfEmailFound(nameOrEmailTuple.Item2);
+                            foundEmail = await customerHandler.IsEmailFound(nameOrEmailTuple.Item2);
                         }
                         catch (ServerException)
                         {
