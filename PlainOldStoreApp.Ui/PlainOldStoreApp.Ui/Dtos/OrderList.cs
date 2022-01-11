@@ -8,6 +8,6 @@ namespace PlainOldStoreApp.Ui.Dtos
 {
     internal class OrderList
     {
-        public List<Order> Orders { get; set; }
+        public List<Order>? Orders { get; set; }
     }
 }

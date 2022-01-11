@@ -552,13 +552,13 @@ namespace PlainOldStoreApp.Ui
                     }
                 }
                 Console.WriteLine("Please enter address 1.");
-                string? address1 = Console.ReadLine().ToUpper();
+                string? address1 = Console.ReadLine()?.ToUpper();
                 Console.WriteLine();
                 Console.WriteLine("Please enter city.");
-                string? city = Console.ReadLine().ToUpper();
+                string? city = Console.ReadLine()?.ToUpper();
                 Console.WriteLine();
                 Console.WriteLine("Please enter state.");
-                string? state = Console.ReadLine().ToUpper();
+                string? state = Console.ReadLine()?.ToUpper();
                 Console.WriteLine();
                 Console.WriteLine("Please enter zip code.");
                 string? zip = Console.ReadLine();

@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PlainOldStoreApp.Ui.Dtos
+﻿namespace PlainOldStoreApp.Ui.Dtos
 {
     public class Order
     {
-        public Guid CustomerId { get; set; }
-        public int StoreLocation { get; set; }
+        public Guid? CustomerId { get; set; }
+        public int? StoreLocation { get; set; }
         public int? ProductId { get; set; }
-        public decimal ProductPrice { get; set; }
-        public string ProductName { get; set; }
+        public decimal? ProductPrice { get; set; }
+        public string? ProductName { get; set; }
         public int? ProductQuantiy { get; set; }
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
         public Order() { }
 
         public Order(string productName, int productQuantity, decimal productPrice)
